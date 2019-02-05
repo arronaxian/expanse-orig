@@ -1,0 +1,9 @@
+<div ng-show="showInventory" class="child">
+    <h1>Inventory</h1>
+    <ol ng-show="inventory.length == 0">
+        <li>No items available.</li>
+    </ol>
+    <ol ng-show="inventory.length > 0">
+        <li ng-repeat="item in inventory track by $index">{{item.count}} {{item.name}} - {{item.description}}</li>
+    </ol>
+</div>

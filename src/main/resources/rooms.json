@@ -1,0 +1,125 @@
+{
+  "rooms": [
+    {
+      "id": "1",
+      "name": "Riverside Fort",
+      "description": "You are at the main gate of the wilderness fort and trading post. .",
+      "type":"place",
+      "mapx":130,
+      "mapy":170,
+      "locationTransitions": [
+        {
+          "transition": "north",
+          "location": "2",
+          "description": "The fort entrance is directly ahead of you."
+        },
+        {
+          "transition": "west",
+          "location": "3",
+          "description": "Futher west, ."
+        },
+        {
+          "transition": "east",
+          "location": "4",
+          "description": "The eastern bulwark sits back from the rivers edge allowing passage to the wilderness beyond."
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "West Bulwark",
+      "description": "The west bulwark forms the corner of the palisade clad fort.  The bulwark is bolstered by rock encrusted dirt mounds piled against the wooden structure. Several masted ships are moored to a makeshift peer.",
+      "type":"place",
+      "mapx":120,
+      "mapy":160,
+      "locationTransitions": [
+        {
+          "transition": "east",
+          "toRoomId": "1",
+          "description": "The river walk leads east to the southern entrance."
+        }
+      ],
+      "items": [
+        {
+          "itemId":"1",
+          "description":"There is a discarded %s near by."
+        }
+      ]
+    },
+
+    {
+      "id": "4",
+      "name": "East Bulwark",
+      "description": "The bulwark forms the east corner of the fort. Dirt and rock bolster the bulwark from attack.",
+      "type":"place",
+      "mapx":150,
+      "mapy":190,
+      "locationTransitions": [
+        {
+          "transition": "west",
+          "toRoomId": "1",
+          "description": "The path leads west to the southern entrance."
+        },
+        {
+          "transition": "east",
+          "toRoomId": "6",
+          "description": "The path leads further east to the wilderness."
+        }
+      ]
+    },
+
+    {
+      "id": "2",
+      "name": "Fort Center",
+      "description": "At the center of the fort is a large store house and market place.",
+      "type":"place",
+      "mapx":150,
+      "mapy":140,
+      "locationTransitions": [
+        {
+          "transition":"south",
+          "toRoomId":"1",
+          "description": "The southern exit leads to the riverside."
+        },
+        {
+          "transition":"enter",
+          "toRoomId":"5",
+          "description": "The main market place building entrance is directly ahead."
+        }
+      ]
+    },
+
+    {
+      "id":5,
+      "name":"Fort Market Place",
+      "description":"The shop keeper stands behind a large wooden counter and greets patrons with a cheery welcoming expression.",
+      "type":"market",
+      "mapx":150,
+      "mapy":140,
+      "locationTransitions": [
+        {
+          "transition":"exit",
+          "toRoomId":"2",
+          "description":"The market place exit is directly behind you."
+        }
+      ]
+    },
+
+    {
+      "id": 6,
+      "name": "Wilderness",
+      "description": "The wilderness remains undisturbed and heavily forested.  The river bends off do south.",
+      "type": "wilderness",
+      "mapx":230,
+      "mapy":170,
+      "locationTransitions": [
+        {
+
+          "transition": "west",
+          "toRoomId": "3",
+          "description": "The fort is to the west.'"
+        }
+      ]
+    }
+  ]
+}

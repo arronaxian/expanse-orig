@@ -1,0 +1,13 @@
+{
+  "nonPlayers": [
+    {
+      "id": "1",
+      "name":"boar",
+      "hit":5,
+      "health":5,
+      "type":"beast",
+      "drop":"provisions",
+      "description": "Wild boar roam freely here."
+    }
+  ]
+}

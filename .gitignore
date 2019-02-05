@@ -1,0 +1,8 @@
+.idea/
+build/
+docs/
+META-INF/
+out/
+target/
+web/
+/src/target/

@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "id": "1",
+      "name":"hammer",
+      "cost":1,
+      "type":"tool",
+      "criticalHitDamage":0,
+      "criticalHitChance":0,
+      "hitDamage":5,
+      "description": "A two handed sledge hammer."
+    },
+    {
+      "id":"2",
+      "name":"provisions",
+      "cost":1,
+      "type":"provision",
+      "criticalHitDamage":0,
+      "criticalHitChance":0,
+      "hitDamage":-5,
+      "description":"Food and water provisions satchel."
+    },
+    {
+      "id":"3",
+      "name":"dagger",
+      "cost":25,
+      "type":"weapon",
+      "criticalHitDamage":10,
+      "criticalHitChance":25,
+      "hitDamage":10,
+      "description":"Small dagger."
+    }
+  ]
+}

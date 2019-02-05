@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html ng-app="expanseApp" ng-controller="expanseController">
+<head>
+    <title>Expanse | {{data.location.name}}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="angular.min.js"></script>
+    <script src="angular-cookies.min.js"></script>
+    <script src="expanse.js"></script>
+    <link rel="stylesheet" type="text/css" href="expanse.css">
+
+</head>
+    <body class="parent">
+        <div name="view" class="child">
+            <h1>{{data.location.name}}</h1>
+
+            <img class="map" ng-style="showMapPosition()" />
+            <p ng-repeat="message in data.messages track by $index">{{message}}</p>
+
+            <div ng-show="data.showMarket" class="child">
+                <p>Items for sale</p>
+                <ol ng-show="data.market.length == 0">
+                    <li>No items available for sale.</li>
+                </ol>
+                <ul ng-show="data.market.length > 0">
+                    <li ng-repeat="item in data.market track by $index">{{item.cost}}c {{item.name}} - {{item.description}}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div ng-show="data.showHistory" class="child">
+            <h1>History</h1>
+            <p ng-repeat="event in data.history track by $index">{{event}}</p>
+        </div>
+
+        <inventory items="data.inventory" show="data.showInventory"></inventory>
+
+        <command-interface></command-interface>
+    </body>
+</html>

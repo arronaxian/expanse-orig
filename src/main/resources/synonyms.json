@@ -1,0 +1,17 @@
+{
+  "rooms": [
+    { "synonyms":["N", "north", "northbound", "northward", "northwards", "due north", "northerly", "forward"],
+      "command":"north",
+      "type":"movement"
+    },
+    { "synonyms":["S", "south", "southbound", "southward", "sourthwards", "to the south", "due south", "southerly", "southmost"],
+      "modifiers":["go", "head", "travel", "traverse", "proceed", "walk", "run", "crawl"],
+      "command":"south",
+      "type":"movement"
+    },
+    { "synonyms":["move south","go south","travel south", "backward"],
+      "command":"south",
+      "type":"movement"
+    }
+  ]
+}

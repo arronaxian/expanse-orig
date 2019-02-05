@@ -1,0 +1,38 @@
+* {
+    font-family: Arial;
+}
+
+.parent {
+    display:flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+}
+
+.child1 {
+    margin: auto;
+}
+
+h1 {
+    font-size: medium;
+    margin:10px;
+}
+
+p {
+    margin:10px;
+}
+
+form {
+    margin:10px;
+}
+
+.map {
+    width: 150px;
+    height: 150px;
+    background: url(worldmap.jpg);
+    background-position: left 80px bottom 80px;
+    background-repeat: no-repeat;
+    float:left;
+    margin:2px;
+    border:2px darkgray groove;
+}

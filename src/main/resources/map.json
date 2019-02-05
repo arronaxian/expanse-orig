@@ -1,0 +1,38 @@
+{
+  "locations": [
+    {
+      "id":"1",
+      "name": "Room 1",
+      "description": "Room 1.",
+      "type":"place",
+      "mapx":0,
+      "mapy":0,
+      "locationTransitions": [
+        {
+          "id":"1",
+          "transition": "south",
+          "location":{ "id":"2" },
+          "description": "South to transition to room 2."
+        }
+      ],
+      "items": [
+        { "id":"1" }
+      ]
+    },
+    {
+      "id":"2",
+      "name": "Room 2",
+      "description": "Room 2.",
+      "type":"place",
+      "mapx":50,
+      "mapy":50,
+      "locationTransitions": [
+      {
+        "id":"2",
+        "transition": "north",
+        "location":{ "id":"1" },
+        "description": "North to transition to room 1."
+      }]
+    }
+  ]
+}
