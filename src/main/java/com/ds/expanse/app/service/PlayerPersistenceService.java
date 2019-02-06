@@ -3,6 +3,7 @@ package com.ds.expanse.app.service;
 import com.ds.expanse.app.api.controller.model.Location;
 import com.ds.expanse.app.api.loader.Mapper;
 import com.ds.expanse.app.api.loader.model.LocationDO;
+import com.ds.expanse.app.api.loader.model.PlayerMapDO;
 import com.ds.expanse.app.api.service.PlayerService;
 import com.ds.expanse.app.api.loader.model.PlayerDO;
 import com.ds.expanse.app.api.controller.model.Player;
@@ -36,8 +37,13 @@ public class PlayerPersistenceService implements PlayerService {
 
         LocationDO firstLocation = locationRepository.findById("1").get();
 
+        PlayerMapDO mapDO = new PlayerMapDO();
+        mapDO.setPlayer(playerDO);
+        mapDO.setLocation(firstLocation);
+        mapDO.setVisistedLocations(firstLocation);
+
         playerDO.setCurrentLocation(firstLocation);
-        playerDO.getVisitedLocations().add(firstLocation);
+        playerDO.getVisitedLocations().add(mapDO);
 
         playerDO = playerRepository.save(playerDO);
 

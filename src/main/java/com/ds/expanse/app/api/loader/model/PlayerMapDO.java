@@ -1,7 +1,5 @@
 package com.ds.expanse.app.api.loader.model;
 
-import com.ds.expanse.app.api.controller.model.Location;
-import com.ds.expanse.app.api.controller.model.Player;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -12,7 +10,7 @@ public class PlayerMapDO {
     public void PlayerMapDO() {
     }
 
-    @DBRef @Setter @Getter private Location location;
-    @DBRef @Setter @Getter private Location modifiedLocation;
-    @DBRef @Setter @Getter private Player player;
+    @DBRef @Setter @Getter private LocationDO location;
+    @DBRef @Setter @Getter private LocationDO visistedLocations;
+    @DBRef @Setter @Getter private PlayerDO player;
 }

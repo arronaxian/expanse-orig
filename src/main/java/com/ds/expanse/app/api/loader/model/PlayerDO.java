@@ -24,8 +24,5 @@ public class PlayerDO {
     @Getter @Setter protected int health;
     @DBRef @Getter @Setter protected LocationDO currentLocation;
     @DBRef @Getter @Setter List<PlayerMapDO> visitedLocations = new ArrayList<>();
-    @DBRef @Getter @Setter List<ItemDO> items = new ArrayList<>();  
-
-//    public void setCurrentLocation(LocationDO location) {
-//    }
+    @DBRef @Getter @Setter List<ItemDO> items = new ArrayList<>();
 }
