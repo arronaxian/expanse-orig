@@ -22,7 +22,6 @@ public class MapperTest {
 
     @Before
     public void testSetup() {
-        mapper.clear();
     }
 
     /**

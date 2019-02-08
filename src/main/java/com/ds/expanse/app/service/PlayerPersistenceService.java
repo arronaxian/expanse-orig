@@ -1,20 +1,20 @@
 package com.ds.expanse.app.service;
 
-import com.ds.expanse.app.api.controller.model.Location;
 import com.ds.expanse.app.api.loader.Mapper;
 import com.ds.expanse.app.api.loader.model.LocationDO;
 import com.ds.expanse.app.api.loader.model.PlayerMapDO;
 import com.ds.expanse.app.api.service.PlayerService;
 import com.ds.expanse.app.api.loader.model.PlayerDO;
 import com.ds.expanse.app.api.controller.model.Player;
-import com.ds.expanse.app.loader.ExpanseLoader;
 import com.ds.expanse.app.repository.LocationRepository;
+import com.ds.expanse.app.repository.PlayerMapRepository;
 import com.ds.expanse.app.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service("PlayerPersistenceService")
 public class PlayerPersistenceService implements PlayerService {
@@ -24,29 +24,35 @@ public class PlayerPersistenceService implements PlayerService {
     @Autowired
     private LocationRepository locationRepository;
 
+    @Autowired
+    private PlayerMapRepository playerMapRepository;
+
     @Override
     public Player createTemporaryPlayer() {
         Mapper mapper = new Mapper();
 
+        // Build the temporary player base information
         PlayerDO playerDO = new PlayerDO();
         playerDO.setName(RandomNameGenerator.build());
         playerDO.setEmailAddress("temporary");
         playerDO.setUid(UUID.randomUUID().toString());
         playerDO.setHealth(100);
         playerDO.setCoins(100);
+        playerDO = playerRepository.insert(playerDO);
 
-        LocationDO firstLocation = locationRepository.findById("1").get();
-
+        // Build the player location and store off the visited location.
         PlayerMapDO mapDO = new PlayerMapDO();
+        LocationDO firstLocation = locationRepository.findById("1").get();
         mapDO.setPlayer(playerDO);
-        mapDO.setLocation(firstLocation);
-        mapDO.setVisistedLocations(firstLocation);
+        mapDO.setVisitedLocation(firstLocation);
+        mapDO = playerMapRepository.insert(mapDO);
 
+        // Set the current and visited location
         playerDO.setCurrentLocation(firstLocation);
         playerDO.getVisitedLocations().add(mapDO);
-
         playerDO = playerRepository.save(playerDO);
 
+        // Map and return
         return mapper.toPlayer(playerDO);
     }
 
@@ -63,6 +69,18 @@ public class PlayerPersistenceService implements PlayerService {
 
             playerDO = playerRepository.insert(playerDO);
         } else {
+            List<PlayerMapDO> playerMapDOs = playerDO.getVisitedLocations().stream()
+                    .map(pm -> {
+                        if ( pm.getId() == null ) {
+                            return playerMapRepository.insert(pm);
+                        } else {
+                            return playerMapRepository.save(pm);
+                        }
+                    }).collect(Collectors.toList());
+            playerDO.setVisitedLocations(playerMapDOs);
+
+
+
             playerDO = playerRepository.save(playerDO);
         }
 

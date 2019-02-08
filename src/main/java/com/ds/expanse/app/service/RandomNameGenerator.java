@@ -10,7 +10,7 @@ public class RandomNameGenerator {
         builder.append(NAMES[(int)(Math.random() * NAMES.length)]);
         builder.append("_");
         for ( int index = 0; index < 10; index ++ ) {
-            builder.append(((int)(Math.random()*9)));
+            builder.append(Math.floor(Math.random()*10.0));
         }
 
         return builder.toString();

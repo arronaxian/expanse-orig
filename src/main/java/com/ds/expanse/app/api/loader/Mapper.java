@@ -8,34 +8,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Mapper {
-    protected Map<String, Player> playerCache = Collections.synchronizedMap(new HashMap<>());
-    protected Map<String, Item> itemCache = Collections.synchronizedMap(new HashMap<>());
-    protected Map<String, Location> locationCache = Collections.synchronizedMap(new HashMap<>());
-    protected Map<String, LocationTransition> locationTransitionCache = Collections.synchronizedMap(new HashMap<>());
-
-    public Map<String, Player> getPlayerCache() {
-        return playerCache;
-    }
-
-    public Map<String, Item> getItemCache() {
-        return itemCache;
-    }
-
-    public Map<String, Location> getLocationCache() {
-        return locationCache;
-    }
-
-    public Map<String, LocationTransition> getLocationTransitionCache() {
-        return locationTransitionCache;
-    }
-
-    public void clear() {
-        getPlayerCache().clear();
-        getItemCache().clear();
-        getLocationCache().clear();
-        getLocationTransitionCache().clear();
-    }
-
     public ItemDO toItemDO(Item item) {
         final ItemDO itemDO;
         if ( item == null ) {
@@ -62,7 +34,7 @@ public class Mapper {
         if ( itemDO == null ) {
             item = null;
         } else {
-            item = itemCache.getOrDefault(itemDO.getId(), new Item());
+            item = new Item();
 
             item.setId(itemDO.getId());
             item.setName(itemDO.getName());
@@ -234,6 +206,11 @@ public class Mapper {
         return locationDO;
     };
 
+    /**
+     * Convert from resource to persistence object.
+     * @param player
+     * @return
+     */
     public PlayerDO toPlayerDO(Player player) {
         final PlayerDO playerDO;
         if ( player == null ) {
@@ -250,32 +227,23 @@ public class Mapper {
                 playerDO.getItems().add(toItemDO(i));
             });
 
+            // Map the current location
+            playerDO.setCurrentLocation(toLocationDO(player.getCurrentLocation()));
+
             // Convert all the visited locations into player map for storage.
-            List<PlayerMapDO> locations = player.getVisitedLocations().values()
+            List<PlayerMapDO> visitedLocations = player.getVisitedLocations().values()
                     .stream()
                     .map(vl -> {
                         LocationDO visitedLocationDO = toLocationDO(vl);
-                        LocationDO locationDO = toLocationDO(locationCache.get(vl.getId()));
 
                         PlayerMapDO playerMapDO = new PlayerMapDO();
-
-                        playerMapDO.setLocation(locationDO);
-                        playerMapDO.setVisistedLocations(visitedLocationDO);
+                        playerMapDO.setVisitedLocation(visitedLocationDO);
                         playerMapDO.setPlayer(playerDO);
 
                         return playerMapDO;
                     })
                     .collect(Collectors.toList());
-
-            playerDO.setVisitedLocations(locations);
-
-            // Find the current location from the player list of locations
-            PlayerMapDO currentLocationDO = playerDO.getVisitedLocations().stream()
-                    .filter(vl -> vl.getLocation().getId().equals(player.getCurrentLocation().getId()))
-                    .findFirst()
-                    .get();
-
-            playerDO.setCurrentLocation(currentLocationDO.getLocation());
+            playerDO.setVisitedLocations(visitedLocations);
 
         }
 
@@ -287,7 +255,7 @@ public class Mapper {
         if ( playerDO == null ) {
             player = null;
         } else {
-            player = playerCache.getOrDefault(playerDO.getId(), new Player(playerDO.getName()));
+            player = new Player(playerDO.getName());
 
             player.setId(playerDO.getId());
             player.setCoins(playerDO.getCoins());
@@ -299,7 +267,7 @@ public class Mapper {
 
             List<Location> locations = playerDO.getVisitedLocations()
                     .stream()
-                    .map(vl -> toLocation(vl.getVisistedLocations()))
+                    .map(vl -> toLocation(vl.getVisitedLocation()))
                     .collect(Collectors.toList());
             locations.forEach(l -> player.getVisitedLocations().put(l.getId(), l));
 

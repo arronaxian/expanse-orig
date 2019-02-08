@@ -17,7 +17,7 @@ import java.util.Set;
 public class Location implements Identifiable<String> {
     public enum Type { place, market, wilderness }
 
-    private String id;
+    @Getter @Setter private String id;
     @Getter @Setter private String name;
     @Getter @Setter private String description;
     @Getter @Setter private Type type = Type.place;
@@ -25,6 +25,8 @@ public class Location implements Identifiable<String> {
     @Getter @Setter private int mapy;
 
     private LocationTransitions transitions = new LocationTransitions();
+
+    // TODO: why did I do this?
     transient private LocationItems locationItems = new LocationItems(this);
     transient private LocationNonPlayers nonPlayers = new LocationNonPlayers();
 
@@ -35,14 +37,6 @@ public class Location implements Identifiable<String> {
         this.id = id;
     }
 
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     @JsonIgnore
     public LocationNonPlayers getLocationNonPlayers() {

@@ -6,10 +6,7 @@ import com.ds.expanse.app.api.loader.model.*;
 import com.ds.expanse.app.api.controller.model.*;
 import com.ds.expanse.app.nlp.ExpanseNLP;
 import com.ds.expanse.app.command.*;
-import com.ds.expanse.app.repository.ItemRepository;
-import com.ds.expanse.app.repository.LocationRepository;
-import com.ds.expanse.app.repository.LocationTransitionRepository;
-import com.ds.expanse.app.repository.PlayerRepository;
+import com.ds.expanse.app.repository.*;
 import com.ds.expanse.app.api.loader.Mapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +33,9 @@ public class ExpanseLoader implements Loader {
     private LocationRepository locationRepository;
 
     @Autowired
+    private PlayerMapRepository playerMapRepository;
+
+    @Autowired
     private LocationTransitionRepository locationTransitionRepository;
 
     private final static Map<String, Item> itemsCacheById = new HashMap<>();
@@ -43,7 +43,8 @@ public class ExpanseLoader implements Loader {
     private final static Map<String, ItemDO> itemsDOCacheById= new HashMap<>();
     private final static Map<String, NonPlayer> npcCacheById = new HashMap<>();
 
-    private Mapper mapper = new Mapper();
+    private final static Map<String, LocationDO> locationDOCacheById = new HashMap<>();
+
 
     public static final ExpanseNLP nlp = new ExpanseNLP();
 
@@ -73,8 +74,9 @@ public class ExpanseLoader implements Loader {
     public void load() throws IOException {
         System.out.println("Expanse loading...");
 
-        // DEBUG
+        // DEBUG: clean up between runs to ensure things are working on initialization
         playerRepository.deleteAll();
+        playerMapRepository.deleteAll();
 
         Map<String, Command> commandCache = new HashMap<>();
         loadItems();
@@ -167,11 +169,13 @@ public class ExpanseLoader implements Loader {
      */
     private void loadMapIntoCache(Map<String, Command> commandCache) throws IOException {
         System.out.println("Loading map...");
-
-        final Mapper mapper = new Mapper();
+        Mapper mapper = new Mapper();
 
         // Fetch locations
         locationRepository.findAll().forEach(ldo -> {
+            // Prepare cache.
+            locationDOCacheById.put(ldo.getId(), ldo);
+
             Location location = mapper.toLocation(ldo);
 
             if ( location.getType() == Location.Type.wilderness ) {
@@ -201,6 +205,8 @@ public class ExpanseLoader implements Loader {
         ObjectMapper objectMapper = new ObjectMapper();
         InputStream itemsStream = ExpanseLoader.class.getResourceAsStream("/items.json");
         ItemsDO items = objectMapper.readerFor(ItemsDO.class).readValue(itemsStream);
+
+        Mapper mapper = new Mapper();
 
         // Convert from DO into model.
         items.getItems().forEach(itemDO -> {
