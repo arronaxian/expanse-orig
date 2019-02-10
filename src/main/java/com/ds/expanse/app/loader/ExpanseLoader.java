@@ -33,9 +33,6 @@ public class ExpanseLoader implements Loader {
     private LocationRepository locationRepository;
 
     @Autowired
-    private PlayerMapRepository playerMapRepository;
-
-    @Autowired
     private LocationTransitionRepository locationTransitionRepository;
 
     private final static Map<String, Item> itemsCacheById = new HashMap<>();
@@ -76,7 +73,6 @@ public class ExpanseLoader implements Loader {
 
         // DEBUG: clean up between runs to ensure things are working on initialization
         playerRepository.deleteAll();
-        playerMapRepository.deleteAll();
 
         Map<String, Command> commandCache = new HashMap<>();
         loadItems();

@@ -5,9 +5,10 @@ import com.ds.expanse.app.api.loader.model.*;
 import com.ds.expanse.app.command.TransitionCommand;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Mapper {
+    public static final Mapper mapper = new Mapper();
+
     public ItemDO toItemDO(Item item) {
         final ItemDO itemDO;
         if ( item == null ) {
@@ -179,7 +180,7 @@ public class Mapper {
         return toLocationDO(location, new HashMap<>());
     }
 
-    public LocationDO toLocationDO(Location location, Map<Location, LocationDO> visistedLocations) {
+    public LocationDO toLocationDO(Location location, Map<Location, LocationDO> visitedLocations) {
         final LocationDO locationDO;
         if ( location == null ) {
             locationDO = null;
@@ -192,14 +193,17 @@ public class Mapper {
             locationDO.setMapy(location.getMapy());
             locationDO.setType(location.getType().name());
 
+            LocationDO visitedLocation = new LocationDO();
+            visitedLocation.setId(location.getVisitedLocationId());
+
             location.getItems().forEach(item -> {
                 locationDO.getItems().add(toItemDO(item));
             });
 
-            visistedLocations.put(location, locationDO);
+            visitedLocations.put(location, locationDO);
 
             location.getTransitions().forEach(transition -> {
-                locationDO.getLocationTransitions().add(toLocationTransitionDO(transition, visistedLocations));
+                locationDO.getLocationTransitions().add(toLocationTransitionDO(transition, visitedLocations));
             });
         }
 
@@ -229,22 +233,6 @@ public class Mapper {
 
             // Map the current location
             playerDO.setCurrentLocation(toLocationDO(player.getCurrentLocation()));
-
-            // Convert all the visited locations into player map for storage.
-            List<PlayerMapDO> visitedLocations = player.getVisitedLocations().values()
-                    .stream()
-                    .map(vl -> {
-                        LocationDO visitedLocationDO = toLocationDO(vl);
-
-                        PlayerMapDO playerMapDO = new PlayerMapDO();
-                        playerMapDO.setVisitedLocation(visitedLocationDO);
-                        playerMapDO.setPlayer(playerDO);
-
-                        return playerMapDO;
-                    })
-                    .collect(Collectors.toList());
-            playerDO.setVisitedLocations(visitedLocations);
-
         }
 
         return playerDO;
@@ -264,12 +252,6 @@ public class Mapper {
             playerDO.getItems().forEach(i -> {
                 player.addItem(toItem(i));
             });
-
-            List<Location> locations = playerDO.getVisitedLocations()
-                    .stream()
-                    .map(vl -> toLocation(vl.getVisitedLocation()))
-                    .collect(Collectors.toList());
-            locations.forEach(l -> player.getVisitedLocations().put(l.getId(), l));
 
             Location location = toLocation(playerDO.getCurrentLocation());
             if ( location != null ) {

@@ -4,10 +4,7 @@ import com.ds.expanse.app.api.controller.model.Item;
 import com.ds.expanse.app.api.controller.model.Location;
 import com.ds.expanse.app.api.controller.model.LocationTransition;
 import com.ds.expanse.app.api.controller.model.Player;
-import com.ds.expanse.app.api.loader.model.ItemDO;
-import com.ds.expanse.app.api.loader.model.LocationDO;
-import com.ds.expanse.app.api.loader.model.LocationTransitionDO;
-import com.ds.expanse.app.api.loader.model.PlayerDO;
+import com.ds.expanse.app.api.loader.model.*;
 import com.ds.expanse.app.command.TransitionCommand;
 import org.junit.Before;
 import org.junit.Test;
@@ -299,6 +296,7 @@ public class MapperTest {
         location.setName("location"+id);
         location.setMapx(1);
         location.setMapy(2);
+        location.setVisitedLocationId("123");
         location.setDescription("location description "+id);
         location.setType(Location.Type.place);
 

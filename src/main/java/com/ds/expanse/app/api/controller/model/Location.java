@@ -18,6 +18,7 @@ public class Location implements Identifiable<String> {
     public enum Type { place, market, wilderness }
 
     @Getter @Setter private String id;
+    @Getter @Setter private String visitedLocationId;
     @Getter @Setter private String name;
     @Getter @Setter private String description;
     @Getter @Setter private Type type = Type.place;

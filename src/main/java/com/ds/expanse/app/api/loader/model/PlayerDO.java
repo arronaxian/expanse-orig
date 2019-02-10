@@ -22,7 +22,10 @@ public class PlayerDO {
     @Getter @Setter protected String uid;
     @Getter @Setter protected int coins;
     @Getter @Setter protected int health;
-    @DBRef @Getter @Setter protected LocationDO currentLocation;
-    @DBRef @Getter @Setter List<PlayerMapDO> visitedLocations = new ArrayList<>();
+    @DBRef @Setter @Getter protected LocationDO currentLocation;
     @DBRef @Getter @Setter List<ItemDO> items = new ArrayList<>();
+
+    public boolean isNew() {
+        return id == null;
+    }
 }
