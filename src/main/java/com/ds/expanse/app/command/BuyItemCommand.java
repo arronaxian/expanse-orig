@@ -18,7 +18,7 @@ public class BuyItemCommand extends DefaultCommand {
         if ( !Location.Type.market.equals(currentLocation.getType() ) ) {
             result.addResultMessage("There is nothing to buy here.");
         } else {
-            final Purchase purchase = request.getProcessor().getMarket().buyItem(request.getPlayer(), itemName);
+            final Purchase purchase = request.getMarket().buyItem(request.getPlayer(), itemName);
             switch ( purchase ) {
                 case nosuchitem:
                     result.addResultMessage("I do not sell " + itemName + ".");

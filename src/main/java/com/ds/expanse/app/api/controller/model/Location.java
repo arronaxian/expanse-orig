@@ -2,14 +2,13 @@ package com.ds.expanse.app.api.controller.model;
 
 import com.ds.expanse.app.api.command.Command;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.tools.javac.jvm.Items;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.Identifiable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Navigable locations on the map.
@@ -18,18 +17,21 @@ public class Location implements Identifiable<String> {
     public enum Type { place, market, wilderness }
 
     @Getter @Setter private String id;
-    @Getter @Setter private String visitedLocationId;
     @Getter @Setter private String name;
     @Getter @Setter private String description;
     @Getter @Setter private Type type = Type.place;
     @Getter @Setter private int mapx;
     @Getter @Setter private int mapy;
 
+    /**
+     * The location was altered by the user.
+     */
+    @Getter @Setter private boolean altered;
+
     private LocationTransitions transitions = new LocationTransitions();
 
-    // TODO: why did I do this?
-    transient private LocationItems locationItems = new LocationItems(this);
-    transient private LocationNonPlayers nonPlayers = new LocationNonPlayers();
+    private LocationItems locationItems = new LocationItems(this);
+    private LocationNonPlayers nonPlayers = new LocationNonPlayers();
 
     public Location() {
     }
@@ -37,7 +39,6 @@ public class Location implements Identifiable<String> {
     public Location(String id) {
         this.id = id;
     }
-
 
     @JsonIgnore
     public LocationNonPlayers getLocationNonPlayers() {
@@ -89,7 +90,24 @@ public class Location implements Identifiable<String> {
     @Override
     public boolean equals(Object object) {
         try {
-            return getId().equalsIgnoreCase(((Location)object).getId());
+            Location location = (Location)object;
+            boolean compare =   getId().equals(location.getId()) &&
+                                getDescription().equals(location.getDescription()) &&
+                                getName().equals(location.getName()) &&
+                                getMapx() == location.getMapx() &&
+                                getMapy() == location.getMapy() &&
+                                getType().equals(location.getType());
+
+            if ( compare ) {
+                List<Item> intersection = locationItems.getItems()
+                        .stream()
+                        .filter(location.locationItems.getItems()::contains)
+                        .collect(Collectors.toList());
+
+                compare = intersection.size() == location.getItems().size();
+            }
+
+            return compare;
         } catch ( Exception e ) {
             return false;
         }
@@ -110,7 +128,7 @@ public class Location implements Identifiable<String> {
 
         this.getItems().forEach(i -> {
                     Item item = i.clone();
-                    location.addItem(item);
+                    location.locationItems.addItem(item);
                 });
 
         return location;

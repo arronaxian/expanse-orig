@@ -38,8 +38,6 @@ public class CommandController {
             // Build the command body
             CommandBodyResourceSupport commandBody = new CommandBodyResourceSupport(result);
 
-            // Save the player's mapCurrent state
-            player = playerService.save(player);
 
             // Add links to the command body
             for ( CommandResult.Type type : result.getTypes()) {

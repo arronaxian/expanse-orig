@@ -20,7 +20,7 @@ public class SaveCommand extends DefaultCommand  {
 
 
             try {
-                request.getProcessor().savePlayer(request.getPlayer());
+                request.savePlayer();
                 result.addResultMessage("Player " + request.getPlayer().getName() + " is saved.");
             } catch (Exception e) {
             }

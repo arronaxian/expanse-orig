@@ -193,9 +193,6 @@ public class Mapper {
             locationDO.setMapy(location.getMapy());
             locationDO.setType(location.getType().name());
 
-            LocationDO visitedLocation = new LocationDO();
-            visitedLocation.setId(location.getVisitedLocationId());
-
             location.getItems().forEach(item -> {
                 locationDO.getItems().add(toItemDO(item));
             });
@@ -261,4 +258,5 @@ public class Mapper {
 
         return player;
     };
+
 }

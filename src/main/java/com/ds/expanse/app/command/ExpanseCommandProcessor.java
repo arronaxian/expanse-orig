@@ -31,8 +31,12 @@ public class ExpanseCommandProcessor implements CommandProcessor {
         final ExpanseNLP nlp = loader.getNLP();
 
         Command lookedUpCommand = nlp.matchCommand(command);
+        CommandResult result = (CommandResult)lookedUpCommand.execute(new CommandRequest(command, player, this));
 
-        return (CommandResult)lookedUpCommand.execute(new CommandRequest(command, player, (CommandProcessor)this));
+        // Save the player's mapCurrent state
+        player = playerService.save(player);
+
+        return result;
     }
 
     @Override
