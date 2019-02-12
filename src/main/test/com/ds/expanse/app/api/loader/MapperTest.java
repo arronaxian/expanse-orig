@@ -296,7 +296,6 @@ public class MapperTest {
         location.setName("location"+id);
         location.setMapx(1);
         location.setMapy(2);
-        location.setVisitedLocationId("123");
         location.setDescription("location description "+id);
         location.setType(Location.Type.place);
 

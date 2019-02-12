@@ -10,11 +10,4 @@ public interface CommandProcessor {
     Player findPlayerByName(String playerName);
     Player savePlayer(Player player);
     Market getMarket();
-
-    /**
-     * Saves the player location changed.
-     * @param player
-     * @return
-     */
-    Player savePlayerLocationChanged(Player player);
 }
