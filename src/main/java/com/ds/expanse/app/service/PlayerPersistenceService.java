@@ -89,7 +89,9 @@ public class PlayerPersistenceService implements PlayerService {
     private void savePlayerCurrentLocation(PlayerDO player) {
         PlayerLocationDO savePlayerLocation = playerLocationRepository.findByPlayerIdAndLocationId(player.getId(), player.getCurrentLocation().getId());
         PlayerLocationDO playerLocation = createPlayerLocationDO(player);
-        playerLocation.setId(savePlayerLocation.getId());
+
+        String playerLocationId = savePlayerLocation == null ? null : savePlayerLocation.getId();
+        playerLocation.setId(playerLocationId);
 
         if ( playerLocation.getId() == null ) {
             playerLocationRepository.insert(playerLocation);
