@@ -39,6 +39,7 @@ public class DropItemCommand extends DefaultCommand {
     public Item dropItem(Player player, String itemName) {
         Item item = player.removeItem(itemName);
         player.getCurrentLocation().addItem(item);
+        player.getCurrentLocation().setAltered(true);
 
         return item;
     }

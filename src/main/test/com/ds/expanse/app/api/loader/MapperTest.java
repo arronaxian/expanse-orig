@@ -302,7 +302,6 @@ public class MapperTest {
         return location;
     }
 
-
     private ItemDO createItemDO() {
         ItemDO itemDO = new ItemDO();
         itemDO.setId("1");

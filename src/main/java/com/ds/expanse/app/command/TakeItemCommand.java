@@ -18,7 +18,9 @@ public class TakeItemCommand extends DefaultCommand {
         if ( !currentLocation.hasItems() ) {
             result.addResultMessage("There is no " + itemName + " here.");
         } else {
-            Item item = currentLocation.removeItem(itemName); // TODO: mark as removed for this player some how
+            // Take the item from the current location and add it to the player.
+            Item item = currentLocation.removeItem(itemName);
+            currentLocation.setAltered(true);
             request.getPlayer().addItem(item);
 
             result.addResultMessage("You have the " + item.getName());

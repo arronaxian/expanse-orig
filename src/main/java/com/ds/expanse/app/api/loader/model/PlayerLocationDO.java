@@ -2,7 +2,9 @@ package com.ds.expanse.app.api.loader.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * Maintains any modifications to the player's location.  This information is for book keeping purposes only.
@@ -10,7 +12,12 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
  *
  * The key is player.id and location.id.
  */
+@Document(collection = "playerlocation")
 public class PlayerLocationDO extends LocationDO {
+    public PlayerLocationDO() {
+        super();
+    }
+
     @DBRef @Setter @Getter PlayerDO player;
     @DBRef @Setter @Getter LocationDO location;
 }
