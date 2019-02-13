@@ -36,7 +36,13 @@ public class DropItemCommand extends DefaultCommand {
         return result;
     }
 
-    public Item dropItem(Player player, String itemName) {
+    /**
+     * Drops the item to current location.
+     * @param player
+     * @param itemName
+     * @return
+     */
+    protected Item dropItem(Player player, String itemName) {
         Item item = player.removeItem(itemName);
         player.getCurrentLocation().addItem(item);
         player.getCurrentLocation().setAltered(true);

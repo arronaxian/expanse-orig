@@ -1,5 +1,6 @@
 package com.ds.expanse.app.service;
 
+import com.ds.expanse.app.api.controller.model.Location;
 import com.ds.expanse.app.api.loader.Mapper;
 import com.ds.expanse.app.api.loader.model.LocationDO;
 import com.ds.expanse.app.api.loader.model.PlayerLocationDO;
@@ -114,16 +115,29 @@ public class PlayerPersistenceService implements PlayerService {
         playerLocationDO.setMapy(location.getMapy());
         playerLocationDO.setItems(location.getItems());
         playerLocationDO.setLocationTransitions(location.getLocationTransitions());
+        playerLocationDO.setType(location.getType());
 
         return playerLocationDO;
     }
-
-
 
     @Override
     public Player findByName(String name) {
         Mapper mapper = new Mapper();
         PlayerDO playerDO = playerRepository.findByName(name);
         return playerDO == null ? null : mapper.toPlayer(playerDO);
+    }
+
+    @Override
+    public Location findPlayerLocation(Player player, Location toLocation) {
+        PlayerLocationDO playerLocation = playerLocationRepository.findByPlayerIdAndLocationId(player.getId(), toLocation.getId());
+        final Location location;
+        if ( playerLocation == null ) {
+            return toLocation;
+        } else {
+            location = mapper.toLocation(playerLocation);
+            location.setId(player.getCurrentLocation().getId());
+        }
+
+        return location;
     }
 }

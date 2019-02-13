@@ -1,6 +1,7 @@
 package com.ds.expanse.app.command;
 
 import com.ds.expanse.app.api.command.CommandProcessor;
+import com.ds.expanse.app.api.controller.model.Location;
 import com.ds.expanse.app.api.controller.model.Market;
 import com.ds.expanse.app.api.controller.model.Player;
 import lombok.Getter;
@@ -22,8 +23,12 @@ public class CommandRequest {
         return this.processor.getMarket();
     }
 
-    public void locationChanged() {
-        // this.process.savePlayerLocationChanged(player);
+    /**
+     * Gets the current location for the player.
+     * @return The current location.
+     */
+    public Location getCurrentLocation(Location toLocation) {
+        return processor.getCurrentLocation(player, toLocation);
     }
 
     public void savePlayer() {

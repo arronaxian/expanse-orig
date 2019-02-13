@@ -1,5 +1,6 @@
 package com.ds.expanse.app.service;
 
+import com.ds.expanse.app.api.controller.model.Location;
 import com.ds.expanse.app.api.service.PlayerService;
 import com.ds.expanse.app.api.controller.model.Player;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,10 @@ public class PlayerInMemoryService implements PlayerService {
 
     public Player findByName(String name) {
         return PLAYER_CACHE.get(name);
+    }
+
+    @Override
+    public Location findPlayerLocation(Player player, Location toLocation) {
+        return player.getCurrentLocation();
     }
 }

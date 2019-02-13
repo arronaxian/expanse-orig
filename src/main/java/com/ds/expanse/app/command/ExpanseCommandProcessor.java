@@ -2,6 +2,7 @@ package com.ds.expanse.app.command;
 
 import com.ds.expanse.app.api.command.Command;
 import com.ds.expanse.app.api.command.CommandProcessor;
+import com.ds.expanse.app.api.controller.model.Location;
 import com.ds.expanse.app.api.controller.model.Market;
 import com.ds.expanse.app.api.service.PlayerService;
 import com.ds.expanse.app.loader.ExpanseLoader;
@@ -47,6 +48,11 @@ public class ExpanseCommandProcessor implements CommandProcessor {
     @Override
     public Player savePlayer(Player player) {
         return playerService.save(player);
+    }
+
+    @Override
+    public Location getCurrentLocation(Player player, Location toLocation) {
+        return playerService.findPlayerLocation(player, toLocation);
     }
 
     @Override

@@ -18,7 +18,9 @@ public class TransitionCommand extends DefaultCommand {
         final CommandResult result = new CommandResult();
 
         if ( transition != null ) {
-            request.getPlayer().setCurrentLocation(transition.getLocation());
+            Location toLocation = request.getCurrentLocation(transition.getLocation());
+
+            request.getPlayer().setCurrentLocation(toLocation);
             result.addResultMessage(MOVED, getCommand(), transition.getLocation().getName());
         } else {
             result.addResultMessage(UNABLE_TO_MOVE, getCommand());
