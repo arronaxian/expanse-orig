@@ -8,7 +8,6 @@ import com.ds.expanse.app.api.service.PlayerService;
 import com.ds.expanse.app.loader.ExpanseLoader;
 import com.ds.expanse.app.nlp.ExpanseNLP;
 import com.ds.expanse.app.api.controller.model.Player;
-import com.ds.expanse.app.service.PlayerPersistenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -42,7 +41,7 @@ public class ExpanseCommandProcessor implements CommandProcessor {
 
     @Override
     public Player findPlayerByName(String playerName) {
-        return playerService.findByName(playerName);
+        return playerService.findPlayerByName(playerName);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class ExpanseCommandProcessor implements CommandProcessor {
 
     @Override
     public Location getCurrentLocation(Player player, Location toLocation) {
-        return playerService.findPlayerLocation(player, toLocation);
+        return playerService.findAlteredPlayerLocation(player, toLocation);
     }
 
     @Override

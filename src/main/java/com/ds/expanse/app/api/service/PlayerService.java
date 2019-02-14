@@ -22,12 +22,22 @@ public interface PlayerService {
      * @param name The name of the player.
      * @return A player, otherwise null if not found.
      */
-    Player findByName(String name);
+    Player findPlayerByName(String name);
 
     /**
      * Finds the player's current location.
      * @param player The player.
      * @return The current location instance of the player, which must be non-null.
      */
-    Location findPlayerLocation(Player player, Location toLocation);
+    Location findAlteredPlayerLocation(Player player, Location toLocation);
+
+    /**
+     * Finds the player's visited location.
+     * @param player The player instance.
+     * @param locationId The locationId
+     * @return Returns the location, otherwise null.
+     */
+    Location findVisitedPlayerLocation(Player player, String locationId);
+
+
 }

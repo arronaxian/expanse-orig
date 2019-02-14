@@ -10,13 +10,10 @@ public class Player {
 
     @Getter @Setter protected String id;
     @Getter @Setter protected String name;
-    @Getter protected Location currentLocation;
+    @Getter @Setter protected Location currentLocation;
     @Getter @Setter protected int coins = 125;
     @Getter @Setter protected Type type = Type.player;
     @Getter @Setter protected int health = 100;
-
-    // Tracks visited locations (location id, location).  This contains the players game state for the map.
-    @Getter @Setter protected Map<String, Location> visitedLocations = new HashMap<>();
 
     protected Item equippedPrimaryWeapon;
 
@@ -74,18 +71,6 @@ public class Player {
     public void setEquippedPrimaryWeapon(Item primaryWeapon) {
         this.equippedPrimaryWeapon = primaryWeapon;
         this.equippedPrimaryWeapon.setEquipped(true);
-    }
-
-    public void setCurrentLocation(Location currentLocation) {
-        // If has never been visited, cache it to remember it's state.
-        Location visitedLocation = this.visitedLocations.get(currentLocation.getId());
-        if ( visitedLocation == null ) {
-            this.currentLocation = currentLocation;
-            this.visitedLocations.put(currentLocation.getId(), currentLocation);
-        } else {
-            // Use the visited version so the state of the location is presented.
-            this.currentLocation = visitedLocation;
-        }
     }
 
     public boolean isNew() {

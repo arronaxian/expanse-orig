@@ -24,12 +24,17 @@ public class PlayerInMemoryService implements PlayerService {
         return player;
     }
 
-    public Player findByName(String name) {
+    public Player findPlayerByName(String name) {
         return PLAYER_CACHE.get(name);
     }
 
     @Override
-    public Location findPlayerLocation(Player player, Location toLocation) {
+    public Location findAlteredPlayerLocation(Player player, Location toLocation) {
         return player.getCurrentLocation();
+    }
+
+    @Override
+    public Location findVisitedPlayerLocation(Player player, String locationId) {
+        return null;
     }
 }

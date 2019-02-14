@@ -26,7 +26,7 @@ public class PlayerController {
 
     @GetMapping(path="/readyplayerone")
     public ResponseEntity<Player> readyPlayerOne(@RequestHeader(value="X-Expanse-User") String user) {
-        Player player = playerService.findByName(user);
+        Player player = playerService.findPlayerByName(user);
         if ( player == null ) {
             player = playerService.createTemporaryPlayer();
         }

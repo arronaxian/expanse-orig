@@ -1,5 +1,6 @@
 package com.ds.expanse.app.controller;
 
+import com.ds.expanse.app.api.controller.model.Location;
 import com.ds.expanse.app.api.loader.Loader;
 import com.ds.expanse.app.api.controller.model.Item;
 import com.ds.expanse.app.api.controller.model.Player;
@@ -27,7 +28,7 @@ public class InventoryController {
 
     @GetMapping("map/current")
     public ResponseEntity<InventoryBodyResourceSupport> mapCurrent(@RequestHeader(value="X-Expanse-User") String user) {
-        Player player = playerService.findByName(user);
+        Player player = playerService.findPlayerByName(user);
         if ( player != null ) {
             String description = player.getCurrentLocation().getItems().stream()
                     .map(items -> items.getDescription())
@@ -43,7 +44,7 @@ public class InventoryController {
 
     @GetMapping("player/current")
     public ResponseEntity<Collection<Item>> playerCurrent(@RequestHeader(value="X-Expanse-User") String user) {
-        Player player = playerService.findByName(user);
+        Player player = playerService.findPlayerByName(user);
         if ( player != null ) {
             return ResponseEntity.ok(player.getItemList());
         } else {
@@ -53,7 +54,7 @@ public class InventoryController {
 
     @GetMapping("/market")
     public ResponseEntity<Collection<Item>> market(@RequestHeader(value="X-Expanse-User") String user) {
-        Player player = playerService.findByName(user);
+        Player player = playerService.findPlayerByName(user);
         if ( player != null ) {
             return ResponseEntity.ok(loader.getMarket().getItems(player));
         } else {

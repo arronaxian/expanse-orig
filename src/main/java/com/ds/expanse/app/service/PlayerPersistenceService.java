@@ -4,12 +4,14 @@ import com.ds.expanse.app.api.controller.model.Location;
 import com.ds.expanse.app.api.loader.Mapper;
 import com.ds.expanse.app.api.loader.model.LocationDO;
 import com.ds.expanse.app.api.loader.model.PlayerLocationDO;
+import com.ds.expanse.app.api.loader.model.PlayerVisitedLocationDO;
 import com.ds.expanse.app.api.service.PlayerService;
 import com.ds.expanse.app.api.loader.model.PlayerDO;
 import com.ds.expanse.app.api.controller.model.Player;
 import com.ds.expanse.app.repository.LocationRepository;
-import com.ds.expanse.app.repository.PlayerLocationRepository;
+import com.ds.expanse.app.repository.PlayerAlteredLocationRepository;
 import com.ds.expanse.app.repository.PlayerRepository;
+import com.ds.expanse.app.repository.PlayerVisitedLocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,10 @@ public class PlayerPersistenceService implements PlayerService {
     private LocationRepository locationRepository;
 
     @Autowired
-    private PlayerLocationRepository playerLocationRepository;
+    private PlayerAlteredLocationRepository playerAlteredLocationRepository;
+
+    @Autowired
+    private PlayerVisitedLocationRepository playerVisitedLocationRepository;
 
     @Override
     public Player createTemporaryPlayer() {
@@ -37,11 +42,9 @@ public class PlayerPersistenceService implements PlayerService {
         playerDO.setUid(UUID.randomUUID().toString());
         playerDO.setHealth(100);
         playerDO.setCoins(100);
-        playerDO = playerRepository.insert(playerDO);
 
         // Build the player location and store off the visited location.
         LocationDO firstLocation = locationRepository.findById("1").get();
-        // Set the current and visited location
         playerDO.setCurrentLocation(firstLocation);
 
         playerDO = save(playerDO);
@@ -56,11 +59,65 @@ public class PlayerPersistenceService implements PlayerService {
 
         Player savedPlayer = mapper.toPlayer(save(playerDO));
 
+        // Save the player current location if altered.
         if ( player.getCurrentLocation().isAltered() ) {
-            savePlayerCurrentLocation(playerDO);
+            saveAlteredPlayerLocation(playerDO);
         }
 
+        // Save the player's visited locations.
+        savePlayerVisitedLocation(playerDO);
+
         return savedPlayer;
+    }
+
+    @Override
+    public Player findPlayerByName(String name) {
+        PlayerDO playerDO = playerRepository.findByName(name);
+
+        if ( playerDO != null ) {
+            Player player = mapper.toPlayer(playerDO);
+
+            // TODO: clean this up - should take PlayerDO as well
+            Location visistedLocation = findVisitedPlayerLocation(player, playerDO.getCurrentLocation().getId());
+            player.setCurrentLocation(visistedLocation);
+
+            return player;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Location findAlteredPlayerLocation(Player player, Location toLocation) {
+        Location location = findAlteredPlayerLocation(player, toLocation.getId());
+        return location == null ? toLocation : location;
+    }
+
+    @Override
+    public Location findVisitedPlayerLocation(Player player, String locationId) {
+        // Look up the visited room
+        PlayerVisitedLocationDO visitedLocation = playerVisitedLocationRepository.findByPlayerIdAndLocationId(player.getId(), locationId);
+
+        // Then see if the visited location was modified, if so use it.  Otherwise use the visited location.
+        Location location = findAlteredPlayerLocation(player, visitedLocation.getId());
+        if ( location == null ) {
+            return mapper.toLocation(visitedLocation.getLocation());
+        } else {
+            return location;
+        }
+    }
+
+    protected Location findAlteredPlayerLocation(Player player, String toLocationId) {
+        PlayerLocationDO playerLocation = playerAlteredLocationRepository.findByPlayerIdAndLocationId(player.getId(), toLocationId);
+        final Location location;
+        if ( playerLocation == null ) {
+            return null;
+        } else {
+            location = mapper.toLocation(playerLocation);
+            location.setId(playerLocation.getLocation().getId());
+        }
+
+        return location;
     }
 
     /**
@@ -68,7 +125,7 @@ public class PlayerPersistenceService implements PlayerService {
      * @param playerDO Saves the player.
      * @return
      */
-    private PlayerDO save(PlayerDO playerDO) {
+    protected PlayerDO save(PlayerDO playerDO) {
         if ( playerDO.isNew() ) {
             PlayerDO exists = playerRepository.findByName(playerDO.getName());
             if ( exists != null ) {
@@ -83,25 +140,37 @@ public class PlayerPersistenceService implements PlayerService {
         return playerDO;
     }
 
+    protected void savePlayerVisitedLocation(PlayerDO player) {
+        PlayerVisitedLocationDO visitedLocationDO = playerVisitedLocationRepository
+                .findByPlayerIdAndLocationId(player.getId(), player.getCurrentLocation().getId());
+        if ( visitedLocationDO == null ) {
+            visitedLocationDO = new PlayerVisitedLocationDO();
+            visitedLocationDO.setPlayer(player);
+            visitedLocationDO.setLocation(player.getCurrentLocation());
+
+            playerVisitedLocationRepository.insert(visitedLocationDO);
+        }
+    }
+
     /**
      * Saves the player's location.
      * @param player The player instance with current location.
      */
-    private void savePlayerCurrentLocation(PlayerDO player) {
-        PlayerLocationDO savePlayerLocation = playerLocationRepository.findByPlayerIdAndLocationId(player.getId(), player.getCurrentLocation().getId());
-        PlayerLocationDO playerLocation = createPlayerLocationDO(player);
+    private void saveAlteredPlayerLocation(PlayerDO player) {
+        PlayerLocationDO savePlayerLocation = playerAlteredLocationRepository.findByPlayerIdAndLocationId(player.getId(), player.getCurrentLocation().getId());
+        PlayerLocationDO playerLocation = createAlteredPlayerLocation(player);
 
         String playerLocationId = savePlayerLocation == null ? null : savePlayerLocation.getId();
         playerLocation.setId(playerLocationId);
 
         if ( playerLocation.getId() == null ) {
-            playerLocationRepository.insert(playerLocation);
+            playerAlteredLocationRepository.insert(playerLocation);
         } else {
-            playerLocationRepository.save(playerLocation);
+            playerAlteredLocationRepository.save(playerLocation);
         }
     }
 
-    private PlayerLocationDO createPlayerLocationDO(PlayerDO playerDO) {
+    private PlayerLocationDO createAlteredPlayerLocation(PlayerDO playerDO) {
         PlayerLocationDO playerLocationDO = new PlayerLocationDO();
 
         playerLocationDO.setPlayer(playerDO);
@@ -118,26 +187,5 @@ public class PlayerPersistenceService implements PlayerService {
         playerLocationDO.setType(location.getType());
 
         return playerLocationDO;
-    }
-
-    @Override
-    public Player findByName(String name) {
-        Mapper mapper = new Mapper();
-        PlayerDO playerDO = playerRepository.findByName(name);
-        return playerDO == null ? null : mapper.toPlayer(playerDO);
-    }
-
-    @Override
-    public Location findPlayerLocation(Player player, Location toLocation) {
-        PlayerLocationDO playerLocation = playerLocationRepository.findByPlayerIdAndLocationId(player.getId(), toLocation.getId());
-        final Location location;
-        if ( playerLocation == null ) {
-            return toLocation;
-        } else {
-            location = mapper.toLocation(playerLocation);
-            location.setId(player.getCurrentLocation().getId());
-        }
-
-        return location;
     }
 }

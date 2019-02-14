@@ -31,7 +31,7 @@ public class MapController {
      */
     @GetMapping("/current")
     public ResponseEntity<MapBodyResourceSupport> current(@RequestHeader(value="X-Expanse-User") String user) {
-        Player player = playerService.findByName(user);
+        Player player = playerService.findPlayerByName(user);
         if ( player != null ) {
             final Location location = player.getCurrentLocation();
             MapBodyResourceSupport mapBody = new MapBodyResourceSupport(location.getDescription());
@@ -61,7 +61,7 @@ public class MapController {
      */
     @GetMapping("/transitions/current")
     public ResponseEntity<MapBodyResourceSupport> transitionsCurrent(@RequestHeader(value="X-Expanse-User") String user) {
-        Player player = playerService.findByName(user);
+        Player player = playerService.findPlayerByName(user);
         if ( player != null ) {
             String description = player.getCurrentLocation().getTransitions().stream()
                     .map(rt -> rt.getDescription()).collect(Collectors.joining(" "));
@@ -80,7 +80,7 @@ public class MapController {
      */
     @GetMapping("/creature/current")
     public ResponseEntity<MapBodyResourceSupport> creatures(@RequestHeader(value="X-Expanse-User") String user) {
-        Player player = playerService.findByName(user);
+        Player player = playerService.findPlayerByName(user);
         if ( player != null ) {
             String description = player.getCurrentLocation().getLocationNonPlayers().getNonPlayers().stream()
                     .map(rt -> rt.getDescription()).collect(Collectors.joining(" "));
@@ -101,9 +101,8 @@ public class MapController {
      */
     @GetMapping("/visited/{id}")
     public ResponseEntity<Location> visited(@RequestHeader(value="X-Expanse-User") String user, @PathVariable(value="id") String id) {
-        Player player = playerService.findByName(user);
-
-        Location location = player.getVisitedLocations().get(id);
+        Player player = playerService.findPlayerByName(user);
+        Location location = playerService.findVisitedPlayerLocation(player, id);
         if ( location != null ) {
             return ResponseEntity.ok(location);
         } else {
