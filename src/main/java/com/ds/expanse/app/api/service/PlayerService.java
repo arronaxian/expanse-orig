@@ -25,7 +25,8 @@ public interface PlayerService {
     Player findPlayerByName(String name);
 
     /**
-     * Finds the player's current location.
+     * TODO: remove this and let findVisitedPlayerLocation do the work.
+     * Finds the player's altered location.
      * @param player The player.
      * @return The current location instance of the player, which must be non-null.
      */

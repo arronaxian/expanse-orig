@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * The player's visited locations.  This is book keeping.
+ * The player's visited locations.  This is book keeping.  References exist for each visited location by player.
  */
 @Document(collection = "playervisitedlocation")
 public class PlayerVisitedLocationDO {

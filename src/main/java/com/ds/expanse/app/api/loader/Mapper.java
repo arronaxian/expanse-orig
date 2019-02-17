@@ -5,9 +5,13 @@ import com.ds.expanse.app.api.loader.model.*;
 import com.ds.expanse.app.command.TransitionCommand;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 public class Mapper {
+    private static final Logger LOG = Logger.getLogger(Mapper.class.getName());
+
     public static final Mapper mapper = new Mapper();
+
 
     public ItemDO toItemDO(Item item) {
         final ItemDO itemDO;
@@ -55,8 +59,15 @@ public class Mapper {
         return toLocation(locationDO, new HashMap<>());
     }
 
-    public Location toLocation(LocationDO locationDO, Map<LocationDO, Location> visitedLocations) {
+    public Location toLocation(PlayerAlteredLocationDO locationDO) {
+        locationDO.setId(locationDO.getLocation().getId());
+
+        return toLocation(locationDO, new HashMap<>());
+    }
+
+    protected Location toLocation(LocationDO locationDO, Map<LocationDO, Location> visitedLocations) {
         final Location location;
+
         if ( locationDO == null ) {
             location = null;
         } else {
@@ -97,6 +108,8 @@ public class Mapper {
             }
         }
 
+        LOG.info( "toLocation :" + location);
+
         return location;
     };
 
@@ -123,6 +136,8 @@ public class Mapper {
             }
             locationTransition.setLocation(location);
         }
+
+        LOG.info( "toLocationTransition :" + locationTransition);
 
         return locationTransition;
     };

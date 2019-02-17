@@ -193,12 +193,12 @@ public class MapperTest {
         LocationDO locationDO2 = createLocationDO("2");
 
         LocationTransitionDO locationTransitionDO = createLocationTransitionDO(locationDO2);
-
         locationDO1.getLocationTransitions().add(locationTransitionDO);
 
         Location location = mapper.toLocation(locationDO1);
 
         assertEquals(1, location.getTransitions().size());
+        assertEquals("2", location.getTransitions().get(0).getLocation().getId());
     }
 
     /**
@@ -226,6 +226,33 @@ public class MapperTest {
 
         assertEquals(1, location2.getTransitions().size());
         assertEquals("2", location2.getTransitions().get(0).getId());
+    }
+
+    @Test
+    public void testMapToLocationWithPlayerAlteredLocationDO() {
+        PlayerDO player = createPlayerDO();
+        LocationDO locationDO1 = createLocationDO("1");
+        LocationDO locationDO2 = createLocationDO("2");
+
+        PlayerAlteredLocationDO locationDOA = createPlayerAlteredLocationDO("1ABC", player, locationDO1);
+        LocationTransitionDO locationTransitionDO1to2 = createLocationTransitionDO("1", locationDO2);
+        LocationTransitionDO locationTransitionDO2to1 = createLocationTransitionDO("2", locationDO1);
+
+        locationDO1.getLocationTransitions().add(locationTransitionDO1to2);
+        locationDOA.getLocationTransitions().add(locationTransitionDO1to2);
+
+        locationDO2.getLocationTransitions().add(locationTransitionDO2to1);
+
+        Location location1 = mapper.toLocation(locationDOA);
+        Location location2 = mapper.toLocation(locationDO2);
+
+        assertEquals(1, location1.getTransitions().size());
+        assertEquals("1", location1.getTransitions().get(0).getId());
+        assertEquals("2", location1.getTransitions().get(0).getLocation().getId());
+
+        assertEquals(1, location2.getTransitions().size());
+        assertEquals("2", location2.getTransitions().get(0).getId());
+        assertEquals("1", location2.getTransitions().get(0).getLocation().getId());
     }
 
     /**
@@ -267,6 +294,21 @@ public class MapperTest {
         locationTransitionDO.setLocation(toLocation);
 
         return locationTransitionDO;
+    }
+
+    private PlayerAlteredLocationDO createPlayerAlteredLocationDO(String id, PlayerDO player, LocationDO originalLocation) {
+        PlayerAlteredLocationDO locationDO = new PlayerAlteredLocationDO();
+
+        locationDO.setId(id);
+        locationDO.setName("location"+id);
+        locationDO.setMapx(1);
+        locationDO.setMapy(2);
+        locationDO.setDescription("location description");
+        locationDO.setType(Location.Type.place.name());
+        locationDO.setLocation(originalLocation);
+        locationDO.setPlayer(player);
+
+        return locationDO;
     }
 
     private LocationTransition createLocationTransition(String id, Location toLocation) {

@@ -61,6 +61,6 @@ public class LocationTransition implements Identifiable<String> {
     }
 
     public String toString() {
-        return description;
+        return " locationtransition id:" + id + " toLocationId:" + toLocation.getId() + " name: " + toLocation.getName();
     }
 }

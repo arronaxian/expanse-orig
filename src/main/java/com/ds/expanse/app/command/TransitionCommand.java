@@ -3,7 +3,11 @@ package com.ds.expanse.app.command;
 import com.ds.expanse.app.api.controller.model.Location;
 import com.ds.expanse.app.api.controller.model.LocationTransition;
 
+import java.util.logging.Logger;
+
 public class TransitionCommand extends DefaultCommand {
+    private static Logger LOG = Logger.getLogger(TransitionCommand.class.getName());
+
     private final static String MOVED = "Moved %s to the %s.";
     private final static String UNABLE_TO_MOVE = "Unable to move %s.";
 
@@ -19,6 +23,8 @@ public class TransitionCommand extends DefaultCommand {
 
         if ( transition != null ) {
             Location toLocation = request.getCurrentLocation(transition.getLocation());
+
+            LOG.info("Transition from '" + request.getPlayer().getCurrentLocation().getName() + "' to " + toLocation.getId() + " > '" + toLocation.getName() + "'");
 
             request.getPlayer().setCurrentLocation(toLocation);
             result.addResultMessage(MOVED, getCommand(), transition.getLocation().getName());

@@ -12,9 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  * The key is player.id and location.id.
  */
-@Document(collection = "playerlocation")
-public class PlayerLocationDO extends LocationDO {
-    public PlayerLocationDO() {
+@Document(collection = "playeralteredlocation")
+public class PlayerAlteredLocationDO extends LocationDO {
+    public PlayerAlteredLocationDO() {
         super();
     }
 

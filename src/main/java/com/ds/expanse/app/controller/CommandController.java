@@ -29,6 +29,7 @@ public class CommandController {
 
     @PutMapping(path="/request")
     public ResponseEntity<CommandBodyResourceSupport> requestCommand(@RequestHeader(value="X-Expanse-User") String user, @RequestParam(value="cmd", defaultValue="") String command) {
+
         // Get the credentials from the header
         Player player = playerService.findPlayerByName(user);
         if ( player != null ) {
