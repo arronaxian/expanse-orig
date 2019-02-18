@@ -38,12 +38,12 @@ public class MapController {
 
             // Add links for transition details
             if ( !player.getCurrentLocation().getTransitions().isEmpty() ) {
-                mapBody.add(linkTo(methodOn(MapController.class).transitionsCurrent(user)).withRel(CommandResult.Type.detail.toString()));
+                mapBody.add(linkTo(methodOn(MapController.class).transitionsCurrent(user)).withRel(CommandResult.Type.transition.toString()));
             }
 
             // Add links for location items details.
             if ( !player.getCurrentLocation().getItems().isEmpty() ) {
-                mapBody.add(linkTo(methodOn(InventoryController.class).mapCurrent(user)).withRel(CommandResult.Type.detail.toString()));
+                mapBody.add(linkTo(methodOn(InventoryController.class).mapCurrent(user)).withRel(CommandResult.Type.locationitem.toString()));
             }
 
             // Add link for visited location details

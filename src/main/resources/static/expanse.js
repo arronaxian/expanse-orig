@@ -4,7 +4,7 @@ let app = angular.module('expanseApp', ['ngCookies']);
 app.factory('expanseFactory', function ($http) {
     let service = {};
 
-    let baseUrl = 'http://localhost:8080/request?cmd=';
+    let baseUrl = 'http://localhost:8080/command/request?cmd=';
     let _finalUrl = '';
     let _command = '';
 
@@ -56,9 +56,7 @@ app.factory('expanseFactory', function ($http) {
 app.controller('expanseController', function ($scope, $cookies, expanseFactory) {
     let MESSAGE_DETAIL_INDEX = 0;
     let REF_DETAIL = 'detail';
-    let REF_INVENTORY = 'inventory';
     let REF_LOCATION = 'location';
-    let REF_MARKET = 'market';
 
     $scope.data = {
         messages:["Welcome traveler..."],
@@ -87,8 +85,6 @@ app.controller('expanseController', function ($scope, $cookies, expanseFactory) 
      * Submit a command to the expanse engine.
      */
     $scope.submitCommand = function () {
-        $scope.data.showMarket = false;
-
         expanseFactory.requestCommand($scope.data.player, $scope.data.command)
             .then(function (response) {
                 // Keep track of history (only first message)
@@ -99,6 +95,9 @@ app.controller('expanseController', function ($scope, $cookies, expanseFactory) 
 
                 // Reset the messages
                 $scope.data.messages = [""];
+                $scope.data.location = {};
+                $scope.data.transition = null;
+                $scope.data.locationitem = null;
 
                 // And the new message
                 addMessage(response.data.result, true);
@@ -133,16 +132,11 @@ app.controller('expanseController', function ($scope, $cookies, expanseFactory) 
             expanseFactory.link(user, link.href).then(function(response) {
                 if ( link.rel == REF_DETAIL ) {
                     addMessage(response.data.result, true);
-                } else if ( link.rel == REF_INVENTORY ) {
-                    $scope.data.inventory = response.data;
-                    $scope.data.showInventory = true;
                 } else if ( link.rel == REF_LOCATION ) {
-                    $scope.data.location = response.data;
-                } else if ( link.rel == REF_MARKET ) {
-                    $scope.data.showMarket = true;
-                    $scope.data.market = response.data;
+                    $scope.data[link.rel] = Object.assign(response.data, $scope.data);
+                } else if ( typeof response.data.result !== 'undefined' ) {
+                    $scope.data[link.rel] = Object.assign(response.data.result, $scope.data);
                 }
-
                 // Keep processing links until all have finished.
                 if ( response.data !== undefined
                     && response.data.links !== undefined

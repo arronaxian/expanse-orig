@@ -31,8 +31,17 @@ public class Player {
         return items.getItemByName(itemName);
     }
 
-    public boolean hasItem(String itenName) {
-        return items.getItemByName(itenName) != null;
+    /**
+     * Finds an item by name.
+     * @param itemName The item name.
+     * @return True if found, otherwise false.
+     */
+    public boolean findItemByName(String itemName) {
+        if ( itemName == null || itemName.isEmpty() ) {
+            return false;
+        } else {
+            return items.getItems().isEmpty() ? false : items.getItemByName(itemName) != null;
+        }
     }
 
     public void addItem(Item item) {

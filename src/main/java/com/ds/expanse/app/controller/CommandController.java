@@ -15,7 +15,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
-@RequestMapping(produces = "application/hal+json")
+@RequestMapping(value = "/command", produces = "application/hal+json")
 public class CommandController {
     @Autowired
     @Qualifier("PlayerPersistenceService")
@@ -39,7 +39,6 @@ public class CommandController {
             // Build the command body
             CommandBodyResourceSupport commandBody = new CommandBodyResourceSupport(result);
 
-
             // Add links to the command body
             for ( CommandResult.Type type : result.getTypes()) {
                 switch ( type ) {
@@ -47,7 +46,7 @@ public class CommandController {
                         commandBody.add(linkTo(methodOn(MapController.class).current(user)).withRel(CommandResult.Type.detail.toString()));
                         break;
                     case transition:
-                        commandBody.add(linkTo(methodOn(MapController.class).transitionsCurrent(user)).withRel(CommandResult.Type.detail.toString()));
+                        commandBody.add(linkTo(methodOn(MapController.class).transitionsCurrent(user)).withRel(CommandResult.Type.transition.toString()));
                         break;
                     case item:
                     case inventory:

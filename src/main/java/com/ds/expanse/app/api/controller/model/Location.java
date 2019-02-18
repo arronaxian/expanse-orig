@@ -25,6 +25,7 @@ public class Location implements Identifiable<String> {
     /**
      * The location was altered by the user.
      */
+    @JsonIgnore
     @Getter @Setter private boolean altered;
 
     private LocationTransitions transitions = new LocationTransitions();

@@ -15,6 +15,7 @@
 
             <img class="map" ng-style="showMapPosition()" />
             <p ng-repeat="message in data.messages track by $index">{{message}}</p>
+            <p>{{data.transition}} {{data.locationitem}}</p>
 
             <div ng-show="data.showMarket" class="child">
                 <p>Items for sale</p>

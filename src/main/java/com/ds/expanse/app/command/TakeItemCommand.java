@@ -15,7 +15,8 @@ public class TakeItemCommand extends DefaultCommand {
 
         Location currentLocation = request.getPlayer().getCurrentLocation();
 
-        if ( !currentLocation.hasItems() ) {
+
+        if ( !request.getPlayer().findItemByName(itemName)) {
             result.addResultMessage("There is no " + itemName + " here.");
         } else {
             // Take the item from the current location and add it to the player.
@@ -25,6 +26,8 @@ public class TakeItemCommand extends DefaultCommand {
 
             result.addResultMessage("You have the " + item.getName());
         }
+
+
 
         result.addType(CommandResult.Type.inventory);
 
