@@ -33,7 +33,7 @@ public interface PlayerService {
     Location findAlteredPlayerLocation(Player player, Location toLocation);
 
     /**
-     * Finds the player's visited location.
+     * Finds the player's location location.
      * @param player The player instance.
      * @param locationId The locationId
      * @return Returns the location, otherwise null.

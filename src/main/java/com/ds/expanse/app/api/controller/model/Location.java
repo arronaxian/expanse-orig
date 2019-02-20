@@ -54,6 +54,10 @@ public class Location implements Identifiable<String> {
         return !locationItems.getItems().isEmpty();
     }
 
+    public boolean hasItem(String itemName) {
+        return locationItems.getItems().stream().filter(item -> item.getName().equalsIgnoreCase(itemName)).count() > 0;
+    }
+
     public void addItem(Item item) {
         locationItems.addItem(item);
     }

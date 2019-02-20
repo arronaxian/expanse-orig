@@ -95,7 +95,6 @@ app.controller('expanseController', function ($scope, $cookies, expanseFactory) 
 
                 // Reset the messages
                 $scope.data.messages = [""];
-                $scope.data.location = {};
                 $scope.data.transition = null;
                 $scope.data.locationitem = null;
 
@@ -107,7 +106,7 @@ app.controller('expanseController', function ($scope, $cookies, expanseFactory) 
                     $scope.processLinks($scope.data.player, response.data.links);
                 }
             }, function (data) {
-                addMessage("Oh dear, something is seriously messed up.");
+                addMessage("Good grief, something is seriously messed up.");
                 addMessage(data);
             });
 
@@ -133,10 +132,11 @@ app.controller('expanseController', function ($scope, $cookies, expanseFactory) 
                 if ( link.rel == REF_DETAIL ) {
                     addMessage(response.data.result, true);
                 } else if ( link.rel == REF_LOCATION ) {
-                    $scope.data[link.rel] = Object.assign(response.data, $scope.data);
+                    $scope.data[link.rel] = response.data;
                 } else if ( typeof response.data.result !== 'undefined' ) {
                     $scope.data[link.rel] = Object.assign(response.data.result, $scope.data);
                 }
+
                 // Keep processing links until all have finished.
                 if ( response.data !== undefined
                     && response.data.links !== undefined

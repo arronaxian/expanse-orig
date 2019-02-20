@@ -45,7 +45,7 @@ public class PlayerPersistenceService implements PlayerService {
         playerDO.setHealth(100);
         playerDO.setCoins(100);
 
-        // Build the player location and store off the visited location.
+        // Build the player location and store off the location location.
         LocationDO firstLocation = locationRepository.findById("1").get();
         playerDO.setCurrentLocation(firstLocation);
 
@@ -87,11 +87,11 @@ public class PlayerPersistenceService implements PlayerService {
 
     @Override
     public Location findVisitedPlayerLocation(Player player, String locationId) {
-        // Look up the visited location to get the original map location reference.
+        // Look up the location location to get the original map location reference.
         PlayerVisitedLocationDO visitedLocation = playerVisitedLocationRepository.findByPlayerIdAndLocationId(player.getId(), locationId);
 
         if ( visitedLocation != null ) {
-            // Then see if the visited location references an altered location.
+            // Then see if the location location references an altered location.
             Location alteredLocation = findAlteredPlayerLocation(player, visitedLocation.getLocation().getId());
             if (alteredLocation == null) {
                 return mapper.toLocation(visitedLocation.getLocation());
@@ -120,7 +120,7 @@ public class PlayerPersistenceService implements PlayerService {
     }
 
     /**
-     * Saves the player visited location based on the current location.
+     * Saves the player location location based on the current location.
      * @param player
      */
     protected void savePlayerVisitedLocation(PlayerDO player) {
@@ -157,7 +157,7 @@ public class PlayerPersistenceService implements PlayerService {
             saveAlteredPlayerLocation(playerDO);
         }
 
-        // Save the player's visited locations.
+        // Save the player's location locations.
         savePlayerVisitedLocation(playerDO);
 
         return playerDO;

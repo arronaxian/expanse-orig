@@ -7,7 +7,7 @@ import org.springframework.hateoas.Identifiable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * The transitionsCurrent from the location.  Transitions lead away (out of) the mapCurrent location.
+ * The transitions from the location.  Transitions lead away (out of) the mapCurrent location.
  */
 public class LocationTransition implements Identifiable<String> {
     private String id;

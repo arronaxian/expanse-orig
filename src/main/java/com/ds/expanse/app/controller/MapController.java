@@ -36,18 +36,18 @@ public class MapController {
             final Location location = player.getCurrentLocation();
             MapBodyResourceSupport mapBody = new MapBodyResourceSupport(location.getDescription());
 
-            // Add links for transition details
+            // Add links for transition details if there are any.  Evil trick to have no transitions out.
             if ( !player.getCurrentLocation().getTransitions().isEmpty() ) {
-                mapBody.add(linkTo(methodOn(MapController.class).transitionsCurrent(user)).withRel(CommandResult.Type.transition.toString()));
+                mapBody.add(linkTo(methodOn(MapController.class).transitions(user)).withRel(CommandResult.Type.transition.toString()));
             }
 
             // Add links for location items details.
             if ( !player.getCurrentLocation().getItems().isEmpty() ) {
-                mapBody.add(linkTo(methodOn(InventoryController.class).mapCurrent(user)).withRel(CommandResult.Type.locationitem.toString()));
+                mapBody.add(linkTo(methodOn(MapController.class).items(user)).withRel(CommandResult.Type.locationitem.toString()));
             }
 
-            // Add link for visited location details
-            mapBody.add(linkTo(methodOn(MapController.class).visited(user, location.getId())).withRel(CommandResult.Type.location.toString()));
+            // Add link for location location details
+            mapBody.add(linkTo(methodOn(MapController.class).location(user, location.getId())).withRel(CommandResult.Type.location.toString()));
 
             return ResponseEntity.ok(mapBody);
         } else {
@@ -56,11 +56,12 @@ public class MapController {
     }
 
     /**
-     * The mapCurrent location transition details.
+     * The map's current location transition details.
+     *
      * @return Details as text.
      */
-    @GetMapping("/transitions/current")
-    public ResponseEntity<MapBodyResourceSupport> transitionsCurrent(@RequestHeader(value="X-Expanse-User") String user) {
+    @GetMapping("/location/transitions/current")
+    public ResponseEntity<MapBodyResourceSupport> transitions(@RequestHeader(value="X-Expanse-User") String user) {
         Player player = playerService.findPlayerByName(user);
         if ( player != null ) {
             String description = player.getCurrentLocation().getTransitions().stream()
@@ -95,16 +96,32 @@ public class MapController {
 
 
     /**
-     * Gets the visited map location by id.
-     * @param id The visited location map id.
-     * @return The visited location details.
+     * Gets the location map location by id.
+     * @param id The location location map id.
+     * @return The location location details.
      */
-    @GetMapping("/visited/{id}")
-    public ResponseEntity<Location> visited(@RequestHeader(value="X-Expanse-User") String user, @PathVariable(value="id") String id) {
+    @GetMapping("/location/{id}")
+    public ResponseEntity<Location> location(@RequestHeader(value="X-Expanse-User") String user, @PathVariable(value="id") String id) {
         Player player = playerService.findPlayerByName(user);
         Location location = playerService.findVisitedPlayerLocation(player, id);
         if ( location != null ) {
             return ResponseEntity.ok(location);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("location/items/current")
+    public ResponseEntity<MapBodyResourceSupport> items(@RequestHeader(value="X-Expanse-User") String user) {
+        Player player = playerService.findPlayerByName(user);
+        if ( player != null ) {
+            String description = player.getCurrentLocation().getItems().stream()
+                    .map(items -> items.getDescription())
+                    .collect(Collectors.joining(" ,"));
+
+            MapBodyResourceSupport inventoryBody = new MapBodyResourceSupport(description);
+
+            return ResponseEntity.ok(inventoryBody);
         } else {
             return ResponseEntity.notFound().build();
         }

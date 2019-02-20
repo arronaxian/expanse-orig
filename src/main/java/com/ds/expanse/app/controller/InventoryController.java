@@ -26,32 +26,6 @@ public class InventoryController {
     @Autowired
     Loader loader;
 
-    @GetMapping("map/current")
-    public ResponseEntity<InventoryBodyResourceSupport> mapCurrent(@RequestHeader(value="X-Expanse-User") String user) {
-        Player player = playerService.findPlayerByName(user);
-        if ( player != null ) {
-            String description = player.getCurrentLocation().getItems().stream()
-                    .map(items -> items.getDescription())
-                    .collect(Collectors.joining(" ,"));
-
-            InventoryBodyResourceSupport inventoryBody = new InventoryBodyResourceSupport(description);
-
-            return ResponseEntity.ok(inventoryBody);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @GetMapping("player/current")
-    public ResponseEntity<Collection<Item>> playerCurrent(@RequestHeader(value="X-Expanse-User") String user) {
-        Player player = playerService.findPlayerByName(user);
-        if ( player != null ) {
-            return ResponseEntity.ok(player.getItemList());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @GetMapping("/market")
     public ResponseEntity<Collection<Item>> market(@RequestHeader(value="X-Expanse-User") String user) {
         Player player = playerService.findPlayerByName(user);

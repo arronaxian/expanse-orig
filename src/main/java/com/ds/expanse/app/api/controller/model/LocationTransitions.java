@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * The list of navigable transitionsCurrent from the location.
+ * The list of navigable transitions from the location.
  */
 public class LocationTransitions {
     @Getter @Setter private CommandMap<LocationTransition> transitionCommands = new CommandMap<>();

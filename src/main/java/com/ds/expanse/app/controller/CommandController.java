@@ -46,11 +46,11 @@ public class CommandController {
                         commandBody.add(linkTo(methodOn(MapController.class).current(user)).withRel(CommandResult.Type.detail.toString()));
                         break;
                     case transition:
-                        commandBody.add(linkTo(methodOn(MapController.class).transitionsCurrent(user)).withRel(CommandResult.Type.transition.toString()));
+                        commandBody.add(linkTo(methodOn(MapController.class).transitions(user)).withRel(CommandResult.Type.transition.toString()));
                         break;
                     case item:
                     case inventory:
-                        commandBody.add(linkTo(methodOn(InventoryController.class).playerCurrent(user)).withRel(type.toString()));
+                        commandBody.add(linkTo(methodOn(PlayerController.class).inventory(user)).withRel(type.toString()));
                         break;
                     case creature:
                         commandBody.add(linkTo(methodOn(MapController.class).creatures(user)).withRel(CommandResult.Type.detail.toString()));
