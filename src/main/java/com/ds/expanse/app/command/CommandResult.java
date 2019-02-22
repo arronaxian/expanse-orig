@@ -6,11 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandResult {
-    /**
-     * detail - general information about
-     * map -
-     */
-    public enum Type { detail, map, item, inventory, locationitem, location, transition, visited, market, creature};
+    public enum Type { detail, map, item, inventory, location, transition, market, creature };
 
     @Getter protected StringBuilder messages = new StringBuilder();
     @Getter protected List<Type> types = new ArrayList<>();

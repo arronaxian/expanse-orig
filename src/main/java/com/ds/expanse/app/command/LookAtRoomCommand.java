@@ -1,5 +1,7 @@
 package com.ds.expanse.app.command;
 
+import com.ds.expanse.app.api.controller.model.Location;
+
 public class LookAtRoomCommand extends DefaultCommand {
 
     public LookAtRoomCommand(String command) {
@@ -9,9 +11,20 @@ public class LookAtRoomCommand extends DefaultCommand {
     public CommandResult execute(CommandRequest request) {
         final CommandResult result = new CommandResult();
 
-        result.addType(CommandResult.Type.map);
+        Location location = request.getPlayer().getCurrentLocation();
+
+        result.addResultMessage("%s - %s", location.getName(), location.getDescription());
+
+        location.getTransitions().forEach(t -> {
+            result.addResultMessage("%s ", t.getDescription() );
+        });
+
+        location.getItems().forEach(i -> {
+            result.addResultMessage("%s ", i.getDescription() );
+        });
+
+        result.addType(CommandResult.Type.location);
         result.addType(CommandResult.Type.item);
-  //      result.addType(CommandResult.Type.creature);
 
         return result;
     }

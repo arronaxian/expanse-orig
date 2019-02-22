@@ -15,7 +15,7 @@
 
             <img class="map" ng-style="showMapPosition()" />
             <p ng-repeat="message in data.messages track by $index">{{message}}</p>
-            <p>{{data.transition}} {{data.locationitem}}</p>
+
 
             <div ng-show="data.showMarket" class="child">
                 <p>Items for sale</p>
@@ -35,6 +35,6 @@
 
         <inventory items="data.inventory" show="data.showInventory"></inventory>
 
-        <command-interface></command-interface>
+        <command-interface/>
     </body>
 </html>

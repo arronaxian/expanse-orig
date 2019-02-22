@@ -1,4 +1,4 @@
-package com.ds.expanse.app.controller;
+package com.ds.expanse.app.controller.resourcesupport;
 
 import com.ds.expanse.app.command.CommandResult;
 import lombok.Getter;

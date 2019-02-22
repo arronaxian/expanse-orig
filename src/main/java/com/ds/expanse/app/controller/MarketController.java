@@ -17,8 +17,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @CrossOrigin(origins = "http://localhost:8080")
 @RestController
-@RequestMapping(value = "/inventory", produces = "application/hal+json")
-public class InventoryController {
+@RequestMapping(value = "/market", produces = "application/hal+json")
+public class MarketController {
     @Autowired
     @Qualifier("PlayerPersistenceService")
     PlayerService playerService;

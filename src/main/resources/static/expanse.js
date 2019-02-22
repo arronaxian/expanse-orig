@@ -131,10 +131,8 @@ app.controller('expanseController', function ($scope, $cookies, expanseFactory) 
             expanseFactory.link(user, link.href).then(function(response) {
                 if ( link.rel == REF_DETAIL ) {
                     addMessage(response.data.result, true);
-                } else if ( link.rel == REF_LOCATION ) {
-                    $scope.data[link.rel] = response.data;
-                } else if ( typeof response.data.result !== 'undefined' ) {
-                    $scope.data[link.rel] = Object.assign(response.data.result, $scope.data);
+                } else if ( typeof response.data !== 'undefined' ) {
+                     $scope.data[link.rel] = response.data.result;
                 }
 
                 // Keep processing links until all have finished.

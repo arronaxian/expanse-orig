@@ -5,6 +5,7 @@ import com.ds.expanse.app.api.loader.Loader;
 import com.ds.expanse.app.api.service.PlayerService;
 import com.ds.expanse.app.command.ExpanseCommandProcessor;
 import com.ds.expanse.app.api.controller.model.Player;
+import com.ds.expanse.app.controller.resourcesupport.CommandBodyResourceSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -42,25 +43,27 @@ public class CommandController {
             // Add links to the command body
             for ( CommandResult.Type type : result.getTypes()) {
                 switch ( type ) {
-                    case map:
-                        commandBody.add(linkTo(methodOn(MapController.class).current(user)).withRel(CommandResult.Type.detail.toString()));
+                    case location:
+                        commandBody.add(linkTo(methodOn(MapController.class).location(user)).withRel(CommandResult.Type.location.toString()));
                         break;
                     case transition:
                         commandBody.add(linkTo(methodOn(MapController.class).transitions(user)).withRel(CommandResult.Type.transition.toString()));
                         break;
                     case item:
+                        commandBody.add(linkTo(methodOn(MapController.class).items(user)).withRel(CommandResult.Type.item.toString()));
+                        break;
                     case inventory:
-                        commandBody.add(linkTo(methodOn(PlayerController.class).inventory(user)).withRel(type.toString()));
+                        commandBody.add(linkTo(methodOn(PlayerController.class).inventory(user)).withRel(CommandResult.Type.inventory.toString()));
                         break;
                     case creature:
-                        commandBody.add(linkTo(methodOn(MapController.class).creatures(user)).withRel(CommandResult.Type.detail.toString()));
+                        commandBody.add(linkTo(methodOn(MapController.class).creatures(user)).withRel(CommandResult.Type.creature.toString()));
                         break;
                 }
             }
 
             // Add links for market items.
             if ( player.getCurrentLocation().getType().equals(market)) {
-                commandBody.add(linkTo(methodOn(InventoryController.class).market(user)).withRel(market.toString()));
+                commandBody.add(linkTo(methodOn(MarketController.class).market(user)).withRel(market.toString()));
             }
 
             return ResponseEntity.ok(commandBody);
