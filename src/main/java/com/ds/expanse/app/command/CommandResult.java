@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandResult {
-    public enum Type { detail, map, item, inventory, location, transition, market, creature };
+    public enum Type { location, transition, item, inventory, market, creature };
 
     @Getter protected StringBuilder messages = new StringBuilder();
     @Getter protected List<Type> types = new ArrayList<>();

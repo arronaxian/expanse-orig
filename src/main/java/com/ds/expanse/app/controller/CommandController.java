@@ -58,17 +58,15 @@ public class CommandController {
                     case creature:
                         commandBody.add(linkTo(methodOn(MapController.class).creatures(user)).withRel(CommandResult.Type.creature.toString()));
                         break;
+                    case market:
+                        commandBody.add(linkTo(methodOn(MarketController.class).market(user)).withRel(market.toString()));
+                        break;
                 }
-            }
-
-            // Add links for market items.
-            if ( player.getCurrentLocation().getType().equals(market)) {
-                commandBody.add(linkTo(methodOn(MarketController.class).market(user)).withRel(market.toString()));
             }
 
             return ResponseEntity.ok(commandBody);
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
 }

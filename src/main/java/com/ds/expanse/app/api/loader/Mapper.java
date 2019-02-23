@@ -13,6 +13,11 @@ public class Mapper {
     public static final Mapper mapper = new Mapper();
 
 
+    /**
+     * Maps an Item to ItemDO instance.
+     * @param item The item instance to map from.
+     * @return An ItemDO instance.
+     */
     public ItemDO toItemDO(Item item) {
         final ItemDO itemDO;
         if ( item == null ) {
@@ -34,6 +39,11 @@ public class Mapper {
         return itemDO;
     };
 
+    /**
+     * Maps an ItemDO to an Item instance.
+     * @param itemDO The ItemDO instance to map from.
+     * @return The mapped Item instance.
+     */
     public Item toItem(ItemDO itemDO) {
         final Item item;
         if ( itemDO == null ) {
@@ -65,14 +75,14 @@ public class Mapper {
         return toLocation(locationDO, new HashMap<>());
     }
 
-    protected Location toLocation(LocationDO locationDO, Map<LocationDO, Location> visitedLocations) {
+    protected Location toLocation(LocationDO locationDO, Map<LocationDO, Location> locationCache) {
         final Location location;
 
         if ( locationDO == null ) {
             location = null;
         } else {
-            if ( visitedLocations.containsKey(locationDO) ) {
-                location = visitedLocations.get(locationDO);
+            if ( locationCache.containsKey(locationDO) ) {
+                location = locationCache.get(locationDO);
             } else {
                 location = new Location();
 
@@ -82,7 +92,7 @@ public class Mapper {
                 location.setMap(locationDO.getMapx(), locationDO.getMapy());
                 location.setType(Location.Type.valueOf(locationDO.getType()));
 
-                visitedLocations.put(locationDO, location);
+                locationCache.put(locationDO, location);
 
                 locationDO.getItems().forEach(itemDO -> {
                     location.addItem(toItem(itemDO));
@@ -95,15 +105,15 @@ public class Mapper {
                     locationTransition.setId(locationTransitionDO.getId());
 
                     final Location cachedLocation;
-                    if ( visitedLocations.containsKey(locationTransitionDO.getLocation() )) {
-                        cachedLocation = visitedLocations.get(locationTransitionDO.getLocation());
+                    if ( locationCache.containsKey(locationTransitionDO.getLocation() )) {
+                        cachedLocation = locationCache.get(locationTransitionDO.getLocation());
                     } else {
-                        cachedLocation = toLocation(locationTransitionDO.getLocation(), visitedLocations);
-                        visitedLocations.put(locationDO, cachedLocation);
+                        cachedLocation = toLocation(locationTransitionDO.getLocation(), locationCache);
+                        cacheLocationDO(locationTransitionDO.getLocation(), cachedLocation, locationCache);
                     }
                     locationTransition.setLocation(cachedLocation);
 
-                    location.addTransition(moveCommand, toLocationTransition(locationTransitionDO, visitedLocations));
+                    location.addTransition(moveCommand, toLocationTransition(locationTransitionDO, locationCache));
                 });
             }
         }
@@ -113,11 +123,19 @@ public class Mapper {
         return location;
     };
 
+    private void cacheLocationDO(LocationDO locationDO, Location location,  Map<LocationDO, Location> locationCache) {
+        if ( locationDO.getId() != location.getId() ) {
+            throw new IllegalArgumentException("Cached LocationDO do not match ids");
+        }
+
+        locationCache.put(locationDO, location);
+    }
+
     public LocationTransition toLocationTransition(LocationTransitionDO locationTransitionDO) {
         return toLocationTransition(locationTransitionDO, new HashMap<>());
     }
 
-    protected LocationTransition toLocationTransition (LocationTransitionDO locationTransitionDO, Map<LocationDO, Location> visistedLocations) {
+    protected LocationTransition toLocationTransition (LocationTransitionDO locationTransitionDO, Map<LocationDO, Location> locationCache) {
         final LocationTransition locationTransition;
         if ( locationTransitionDO == null ) {
             locationTransition = null;
@@ -128,11 +146,11 @@ public class Mapper {
             locationTransition.setTransition(locationTransitionDO.getTransition());
 
             final Location location;
-            if ( visistedLocations.containsKey(locationTransitionDO.getLocation()) ) {
-                location = visistedLocations.get(locationTransitionDO.getLocation());
+            if ( locationCache.containsKey(locationTransitionDO.getLocation()) ) {
+                location = locationCache.get(locationTransitionDO.getLocation());
             } else {
                 location = toLocation(locationTransitionDO.getLocation());
-                visistedLocations.put(locationTransitionDO.getLocation(), location);
+                locationCache.put(locationTransitionDO.getLocation(), location);
             }
             locationTransition.setLocation(location);
         }
@@ -142,7 +160,7 @@ public class Mapper {
         return locationTransition;
     };
 
-    public LocationTransition toLocationTransition (LocationTransitionDO locationTransitionDO, HashMap<LocationDO, Location> visistedLocations) {
+    public LocationTransition toLocationTransition (LocationTransitionDO locationTransitionDO, HashMap<LocationDO, Location> locationCache) {
         final LocationTransition locationTransition;
         if ( locationTransitionDO == null ) {
             locationTransition = null;
@@ -153,8 +171,8 @@ public class Mapper {
             locationTransition.setDescription(locationTransitionDO.getDescription());
             locationTransition.setTransition(locationTransitionDO.getTransition());
 
-            final Location location = visistedLocations.containsKey(locationTransitionDO.getLocation()) ?
-                visistedLocations.get(locationTransitionDO.getLocation()) :
+            final Location location = locationCache.containsKey(locationTransitionDO.getLocation()) ?
+                locationCache.get(locationTransitionDO.getLocation()) :
                 toLocation(locationTransitionDO.getLocation());
 
             locationTransition.setLocation(location);
@@ -167,7 +185,7 @@ public class Mapper {
         return toLocationTransitionDO(locationTransition, new HashMap<>());
     };
 
-    protected LocationTransitionDO toLocationTransitionDO(LocationTransition locationTransition, Map<Location, LocationDO> visistedLocations) {
+    protected LocationTransitionDO toLocationTransitionDO(LocationTransition locationTransition, Map<Location, LocationDO> locationCache) {
         final LocationTransitionDO locationTransitionDO;
         if ( locationTransition == null ) {
             locationTransitionDO = null;
@@ -178,11 +196,11 @@ public class Mapper {
             locationTransitionDO.setTransition(locationTransition.getTransition());
 
             final LocationDO locationDO;
-            if ( visistedLocations.containsKey(locationTransition.getLocation()) ) {
-                locationDO = visistedLocations.get(locationTransition.getLocation());
+            if ( locationCache.containsKey(locationTransition.getLocation()) ) {
+                locationDO = locationCache.get(locationTransition.getLocation());
             } else {
-                locationDO = toLocationDO(locationTransition.getLocation(), visistedLocations);
-                visistedLocations.put(locationTransition.getLocation(), locationDO);
+                locationDO = toLocationDO(locationTransition.getLocation(), locationCache);
+                locationCache.put(locationTransition.getLocation(), locationDO);
             }
             locationTransitionDO.setLocation(locationDO);
         }
@@ -195,7 +213,7 @@ public class Mapper {
         return toLocationDO(location, new HashMap<>());
     }
 
-    public LocationDO toLocationDO(Location location, Map<Location, LocationDO> visitedLocations) {
+    public LocationDO toLocationDO(Location location, Map<Location, LocationDO> locationCache) {
         final LocationDO locationDO;
         if ( location == null ) {
             locationDO = null;
@@ -212,10 +230,10 @@ public class Mapper {
                 locationDO.getItems().add(toItemDO(item));
             });
 
-            visitedLocations.put(location, locationDO);
+            locationCache.put(location, locationDO);
 
             location.getTransitions().forEach(transition -> {
-                locationDO.getLocationTransitions().add(toLocationTransitionDO(transition, visitedLocations));
+                locationDO.getLocationTransitions().add(toLocationTransitionDO(transition, locationCache));
             });
         }
 

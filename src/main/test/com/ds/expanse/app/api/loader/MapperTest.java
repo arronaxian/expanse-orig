@@ -282,6 +282,80 @@ public class MapperTest {
         assertEquals("2", locationDO2.getLocationTransitions().get(0).getId());
     }
 
+    /**
+     * Map from LocationDO to Location with transitive location transition child locations
+     *
+     * A -> B -> C
+     */
+    @Test
+    public void testMapToLocationDOWithLocationTransitionTransitive() {
+        Location location1 = createLocation("1");
+        Location location2 = createLocation("2");
+        Location location3 = createLocation("3");
+
+        LocationTransition locationTransition1to2 = createLocationTransition("1", location2);
+        LocationTransition locationTransition2to3 = createLocationTransition("2", location3);
+        LocationTransition locationTransition3to2 = createLocationTransition("3", location2);
+
+        location1.addTransition(new TransitionCommand("move"), locationTransition1to2);
+        location2.addTransition(new TransitionCommand("move"), locationTransition2to3);
+        location3.addTransition(new TransitionCommand("move"), locationTransition3to2);
+
+        LocationDO locationDO1 = mapper.toLocationDO(location1);
+        LocationDO locationDO2 = mapper.toLocationDO(location2);
+        LocationDO locationDO3 = mapper.toLocationDO(location3);
+
+        assertEquals(1, locationDO1.getLocationTransitions().size());
+        assertEquals("1", locationDO1.getLocationTransitions().get(0).getId());
+        assertEquals("2", locationDO1.getLocationTransitions().get(0).getLocation().getId());
+
+        assertEquals(1, locationDO2.getLocationTransitions().size());
+        assertEquals("2", locationDO2.getLocationTransitions().get(0).getId());
+        assertEquals("3", locationDO2.getLocationTransitions().get(0).getLocation().getId());
+
+        assertEquals(1, locationDO3.getLocationTransitions().size());
+        assertEquals("3", locationDO3.getLocationTransitions().get(0).getId());
+        assertEquals("2", locationDO3.getLocationTransitions().get(0).getLocation().getId());
+
+    }
+
+    /**
+     * Map from LocationDO to Location with location transition child data reflexive.
+     *
+     * A -> B -> C
+     */
+    @Test
+    public void testMapToLocationWithLocationTransitionTransitive() {
+        LocationDO locationDO1 = createLocationDO("1");
+        LocationDO locationDO2 = createLocationDO("2");
+        LocationDO locationDO3 = createLocationDO("3");
+
+        LocationTransitionDO locationTransition1to2 = createLocationTransitionDO("1", locationDO2);
+        LocationTransitionDO locationTransition2to3 = createLocationTransitionDO("2", locationDO3);
+        LocationTransitionDO locationTransition3to2 = createLocationTransitionDO("3", locationDO2);
+
+        locationDO1.getLocationTransitions().add(locationTransition1to2);
+        locationDO2.getLocationTransitions().add(locationTransition2to3);
+        locationDO3.getLocationTransitions().add(locationTransition3to2);
+
+        Location location1 = mapper.toLocation(locationDO1);
+        Location location2 = mapper.toLocation(locationDO2);
+        Location location3 = mapper.toLocation(locationDO3);
+
+        assertEquals(1, location1.getTransitions().size());
+        assertEquals("1", location1.getTransitions().get(0).getId());
+        assertEquals("2", location1.getTransitions().get(0).getLocation().getId());
+
+        assertEquals(1, location2.getTransitions().size());
+        assertEquals("2", location2.getTransitions().get(0).getId());
+        assertEquals("3", location2.getTransitions().get(0).getLocation().getId());
+
+        assertEquals(1, location3.getTransitions().size());
+        assertEquals("3", location3.getTransitions().get(0).getId());
+        assertEquals("2", location3.getTransitions().get(0).getLocation().getId());
+
+    }
+
     private LocationTransitionDO createLocationTransitionDO(LocationDO toLocation) {
         return createLocationTransitionDO("1", toLocation);
     }

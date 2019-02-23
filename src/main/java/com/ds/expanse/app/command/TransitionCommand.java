@@ -32,7 +32,7 @@ public class TransitionCommand extends DefaultCommand {
             result.addResultMessage(UNABLE_TO_MOVE, getCommand());
         }
 
-        result.addType(CommandResult.Type.map);
+        result.addType(CommandResult.Type.location);
         result.addType(CommandResult.Type.creature);
 
         if ( request.getPlayer().getCurrentLocation().getType().equals(Location.Type.market)) {

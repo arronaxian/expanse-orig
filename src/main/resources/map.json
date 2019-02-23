@@ -27,12 +27,35 @@
       "mapx":50,
       "mapy":50,
       "locationTransitions": [
-      {
-        "id":"2",
-        "transition": "north",
-        "location":{ "id":"1" },
-        "description": "North to transition to room 1."
-      }]
+        {
+          "id":"2",
+          "transition": "south",
+          "location":{ "id":"3" },
+          "description": "South to transition to room 3."
+        },
+        {
+          "id":"3",
+          "transition": "north",
+          "location":{ "id":"1" },
+          "description": "North to transition to room 1."
+        }
+
+      ]
+    },
+    {
+      "id":"3",
+      "name": "Room 3",
+      "description": "Room 3 description.",
+      "type":"wilderness",
+      "mapx":100,
+      "mapy":80,
+      "locationTransitions": [
+        {
+          "id":"4",
+          "transition": "north",
+          "location":{ "id":"2" },
+          "description": "North to transition to room 2."
+        }]
     }
   ]
 }

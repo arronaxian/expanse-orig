@@ -15,7 +15,9 @@ import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
-@CrossOrigin(origins = "http://localhost:8080")
+/**
+ * Market REST controller handles market interactions.
+ */
 @RestController
 @RequestMapping(value = "/market", produces = "application/hal+json")
 public class MarketController {
@@ -26,7 +28,7 @@ public class MarketController {
     @Autowired
     Loader loader;
 
-    @GetMapping("/market")
+    @GetMapping("/inventory")
     public ResponseEntity<Collection<Item>> market(@RequestHeader(value="X-Expanse-User") String user) {
         Player player = playerService.findPlayerByName(user);
         if ( player != null ) {

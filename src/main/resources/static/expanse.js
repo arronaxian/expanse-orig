@@ -95,15 +95,13 @@ app.controller('expanseController', function ($scope, $cookies, expanseFactory) 
 
                 // Reset the messages
                 $scope.data.messages = [""];
-                $scope.data.transition = null;
-                $scope.data.locationitem = null;
 
                 // And the new message
                 addMessage(response.data.result, true);
 
                 // Processing links based on link 'rel'ationships.
                 if ( response.data !== undefined && response.data.links.length > 0 ) {
-                    $scope.processLinks($scope.data.player, response.data.links);
+                    processLinks($scope.data.player, response.data.links);
                 }
             }, function (data) {
                 addMessage("Good grief, something is seriously messed up.");
@@ -122,16 +120,14 @@ app.controller('expanseController', function ($scope, $cookies, expanseFactory) 
     };
 
     /**
-     * Process all hateoas links for the request.
+     * Process all HATEOS links for the request.
      *
      * @param links The provided links.
      */
-    $scope.processLinks = function(user, links) {
+    function processLinks(user, links) {
         links.forEach(link => {
             expanseFactory.link(user, link.href).then(function(response) {
-                if ( link.rel == REF_DETAIL ) {
-                    addMessage(response.data.result, true);
-                } else if ( typeof response.data !== 'undefined' ) {
+                if ( typeof response.data !== 'undefined' ) {
                      $scope.data[link.rel] = response.data.result;
                 }
 
@@ -139,7 +135,7 @@ app.controller('expanseController', function ($scope, $cookies, expanseFactory) 
                 if ( response.data !== undefined
                     && response.data.links !== undefined
                     && response.data.links.length > 0 ) {
-                    $scope.processLinks(user, response.data.links);
+                    processLinks(user, response.data.links);
                 }
             });
         })
