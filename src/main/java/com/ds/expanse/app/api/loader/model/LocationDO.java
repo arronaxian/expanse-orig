@@ -18,6 +18,7 @@ public class LocationDO {
     @Getter @Setter private String type;
     @Getter @Setter private int mapx;
     @Getter @Setter private int mapy;
+    @Getter @Setter private boolean startHere = false;
 
     @DBRef @Getter @Setter private List<LocationTransitionDO> locationTransitions = new ArrayList<>();
     @DBRef @Getter @Setter private List<ItemDO> items = new ArrayList<>();
